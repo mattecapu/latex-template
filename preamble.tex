@@ -1,5 +1,3 @@
-\usepackage{caption, subcaption}
-
 \usepackage{todonotes}
 \usepackage{fonttable}
 \usepackage{stmaryrd}
@@ -106,8 +104,9 @@
 % cotangent
 \newcommand{\cotan}{\operatorname{cotan}}
 
-% argmin
-\newcommand{\argmin}{\operatorname{argmin}}
+% argoptim
+\DeclareMathOperator{\argmax}{\mathrm{argmin}}
+\DeclareMathOperator{\argmax}{\mathrm{argmax}}
 
 % 'does not imply' symbol
 \newcommand{\nimplies}{\centernot\implies}
@@ -364,7 +363,6 @@
 \newcommand{\coplay}{\mathsf{coplay}}
 
 \newcommand{\name}[1]{\lceil #1 \rceil}
-\DeclareMathOperator{\argmax}{\mathrm{argmax}}
 
 % identity
 \newcommand{\identity}{\mathrm{id}}

@@ -51,6 +51,11 @@
 \pagestyle{headings}
 \linespread{1.3}
 
+% tweaks for typograhpy
+\RequirePackage{microtype}
+\RequirePackage[all]{nowidow}
+\RequirePackage[lastparline]{impnattypo}
+
 \ifthenelse{\boolean{printmode}}{%
 	\RequirePackage{geometry}%
 }{%
@@ -68,9 +73,6 @@
 % tweaks for lists
 \RequirePackage{enumitem}
 \setlist{labelindent=\parindent, leftmargin=2\parindent}
-
-% tweaks for typograhpy
-\RequirePackage{microtype}
 
 % bibs
 \RequirePackage[
