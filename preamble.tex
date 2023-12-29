@@ -20,9 +20,10 @@
 \newenvironment{eqalign}{\begin{equation}\begin{aligned}}{\end{aligned}\end{equation}}
 \newenvironment{eqalign*}{\begin{equation*}\begin{aligned}}{\end{aligned}\end{equation*}}
 
-% diagrams
-\newenvironment{diagram}{\begin{equation}\begin{tikzcd}}{\end{tikzcd}\end{equation}}
-\newenvironment{diagram*}{\begin{equation*}\begin{tikzcd}}{\end{tikzcd}\end{equation*}}
+% wide equations (for eqs in enums)
+\newenvironment{eqwide}{\begin{equation}\displayindent0pt\displaywidth\textwidth}{\end{equation}}
+\newenvironment{eqalignwide}{\begin{eqalign}\displayindent0pt\displaywidth\textwidth}{\end{eqalign}}
+
 
 \tikzset{
   relation/.style={
@@ -120,11 +121,10 @@
 \newcommand{\liff}{\leftrightarrow}
 
 % inhabitation for types
-\newcommand{\tin}{\!:\!}
+\newcommand{\inh}{\!\colon\!}
 
 % inverses of \to
-\newcommand{\ot}{\leftarrow}
-\newcommand{\from}{\ot}
+\newcommand{\from}{\leftarrow}
 
 % long version of \to
 \newcommand{\longto}{\longrightarrow}
@@ -135,8 +135,9 @@
 
 % inclusion
 \newcommand{\into}{\hookrightarrow}
-\newcommand{\inot}{\hookleftarrow}
+\newcommand{\infrom}{\hookleftarrow}
 \newcommand{\monoto}{\rightarrowtail}
+\newcommand{\monofrom}{\leftarrowtail}
 
 % surjection
 \newcommand{\onto}{\twoheadrightarrow}
@@ -166,12 +167,12 @@
 
 % profunctors
 \newcommand{\profto}{\stackMath\mathrel{\stackinset{c}{-0.25ex}{c}{0.25ex}{\shortmid}{\to}}}
-\newcommand{\longprofto}{\stackMath\mathrel{\stackinset{c}{-0.25ex}{c}{0.25ex}{\shortmid}{\longrightarrow}}}
+\newcommand{\longprofto}{\stackMath\mathrel{\stackinset{c}{-0.25ex}{c}{0.25ex}{\shortmid}{\longto}}}
 \newcommand{\nprofto}[1]{\narrow{#1}{\profto}}
 
 % double categories
 \newcommand{\horto}{\longto}
-\newcommand{\verto}{\stackMath\mathrel{\stackinset{c}{-0.15ex}{c}{0.15ex}{\bullet}{\longto}}}
+\newcommand{\verto}{\stackMath\mathrel{\stackinset{c}{0ex}{c}{0.05ex}{\bullet}{\longto}}}
 \newcommand{\nhorto}[1]{\narrow{#1}{\horto}}
 \newcommand{\nverto}[1]{\narrow{#1}{\verto}}
 
