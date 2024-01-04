@@ -142,10 +142,7 @@
 % surjection
 \newcommand{\onto}{\twoheadrightarrow}
 \newcommand{\epito}{\twoheadrightarrow}
-
-% iso arrows
-\newcommand{\isoto}{\overset{\sim}\to}
-\newcommand{\isolongto}{\overset{\sim}\longto}
+\newcommand{\epifrom}{\twoheadleftarrow}
 
 % 2-morphisms
 \newcommand{\twoto}{\Rightarrow}
@@ -157,13 +154,22 @@
 \newcommand{\threeto}{\Rrightarrow}
 
 \newcommand{\narrow}[2]{\overset{#1}{#2}}
-\newcommand{\nto}[1]{\narrow{#1}{\to}}
-\newcommand{\nfrom}[1]{\narrow{#1}{\from}}
-\newcommand{\nlongto}[1]{\xrightarrow{#1}}
+\newcommand{\nto}[1]{\xrightarrow{#1}}
+\newcommand{\nlongto}[1]{\xrightarrow{\;#1\;}}
 \newcommand{\ninto}[1]{\narrow{#1}{\into}}
-\newcommand{\nisoto}[1]{\narrow{#1}{\isolongto}}
-\newcommand{\nepi}[1]{\narrow{#1}{\epi}}
-\newcommand{\nmono}[1]{\narrow{#1}{\mono}}
+\newcommand{\nepito}[1]{\narrow{#1}{\epito}}
+\newcommand{\nmonoto}[1]{\narrow{#1}{\monoto}}
+
+\newcommand{\nfrom}[1]{\narrow{#1}{\from}}
+\newcommand{\nlongfrom}[1]{\xleftarrow{\;#1\;}}
+\newcommand{\ninfrom}[1]{\narrow{#1}{\infrom}}
+\newcommand{\nepifrom}[1]{\narrow{#1}{\epifrom}}
+\newcommand{\nmonofrom}[1]{\narrow{#1}{\monofrom}}
+
+\newcommand{\nisoto}[1]{\xrightarrow[\sim]{#1}}
+\newcommand{\nisofrom}[1]{\xleftarrow[\sim]{#1}}
+\newcommand{\isofrom}[1]{\nisofrom{}}
+\newcommand{\isoto}[1]{\nisoto{}}
 
 % profunctors
 \newcommand{\profto}{\stackMath\mathrel{\stackinset{c}{-0.25ex}{c}{0.25ex}{\shortmid}{\to}}}
