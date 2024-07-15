@@ -35,6 +35,17 @@
 \setcounter{tocdepth}{3}
 \setcounter{secnumdepth}{3}
 
+% change headings
+\usepackage[indentafter]{titlesec}
+\titleformat{name=\section}{}{\thetitle.}{0.8em}{\centering\scshape}
+\titleformat{name=\subsection}[runin]{}{\thetitle.}{0.5em}{\bfseries}
+\titleformat{name=\subsubsection}[runin]{}{\thetitle.}{0.5em}{\itshape}[.]
+\titleformat{name=\paragraph,numberless}[runin]{}{}{0em}{}[.]
+\titlespacing{\paragraph}{0em}{0em}{0.5em}
+\titleformat{name=\subparagraph,numberless}[runin]{}{}{0em}{}[.]
+\titlespacing{\subparagraph}{0em}{0em}{0.5em}
+
+
 % environments for theorems
 \usepackage{mathtools, amsthm}
 \usepackage{thmtools, thm-restate}
@@ -146,7 +157,6 @@
 % symbols
 \usepackage{mathrsfs}
 \usepackage{amssymb, amsfonts}
-\usepackage{textcomp}
 \usepackage{todonotes}
 \usepackage{fonttable}
 \usepackage{stmaryrd}
@@ -158,6 +168,9 @@
 
 \usepackage{quiver}
 \usepackage{tangle}
+
+\usepackage{kpfonts}
+\usepackage{newpxtext}
 
 % todos
 \newcommand{\matteo}[1]{\todo[inline,color=green!30]{\textbf{Matteo}: {#1}}}
@@ -200,15 +213,6 @@
 }
 \tikzcdset{
   twocell/.style={Rightarrow, shorten >= 3ex, shorten <= 3ex}
-}
-
-\tikzcdset{
-  row sep/normal={
-    6ex
-  },
-  column sep/normal={
-    8ex
-  }
 }
 
 % comment on an equation
