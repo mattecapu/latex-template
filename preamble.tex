@@ -1,4 +1,4 @@
-\usepackage{geometry}
+\usepackage[top=2.5cm, bottom=2.5cm, left=3cm, right=4cm]{geometry}
 
 % encoding of the input files
 \usepackage[utf8]{inputenc}
@@ -25,26 +25,18 @@
 
 % bibs
 \usepackage[
-	backend=biber,
-	citestyle=ieee-alphabetic,
-	bibstyle=alphabetic,
-	giveninits=true
+  backend=biber,
+  citestyle=ieee-alphabetic,
+  bibstyle=alphabetic,
+  giveninits=true,
+  maxnames=99
 ]{biblatex}
+
+\renewcommand\thesection{\arabic{section}}
 
 % show subsubsections in TOC
 \setcounter{tocdepth}{3}
 \setcounter{secnumdepth}{3}
-
-% change headings
-\usepackage[indentafter]{titlesec}
-\titleformat{name=\section}{}{\thetitle.}{0.8em}{\centering\scshape}
-\titleformat{name=\subsection}[runin]{}{\thetitle.}{0.5em}{\bfseries}
-\titleformat{name=\subsubsection}[runin]{}{\thetitle.}{0.5em}{\itshape}[.]
-\titleformat{name=\paragraph,numberless}[runin]{}{}{0em}{}[.]
-\titlespacing{\paragraph}{0em}{0em}{0.5em}
-\titleformat{name=\subparagraph,numberless}[runin]{}{}{0em}{}[.]
-\titlespacing{\subparagraph}{0em}{0em}{0.5em}
-
 
 % environments for theorems
 \usepackage{mathtools, amsthm}
@@ -61,7 +53,7 @@
 % images & plots
 \usepackage{tikz}
 
-\usetikzlibrary{cd, arrows}
+\usetikzlibrary{cd, arrows, nfold}
 \usetikzlibrary{decorations.pathreplacing}
 
 % finer numbering for equations
@@ -83,140 +75,139 @@
 	{\restatable[#1]{definition}{#2}}
 	{\endrestatable}
 
-% enable Appendices environment
-\usepackage[toc, page]{appendix}
+% % enable Appendices environment
+% \usepackage[toc, page]{appendix}
 
+% break urls (in bibliography too)
+\usepackage{xurl}
 % enable hyperlinks in the doc
 \usepackage{hyperref}
 \hypersetup{
-    colorlinks=true,       % false: boxed links; true: colored links
-    linkcolor=red,        % color of internal links
-    filecolor=blue,        % color of file links
-    urlcolor=blue,         % color of external links
-    citecolor=green,        % color of citation links
-    pdfborder={0 0 0}      % no border around links
+	colorlinks=true,       % false: boxed links; true: colored links
+	linkcolor=blue,        % color of internal links
+	filecolor=blue,        % color of file links
+	urlcolor=blue,         % color of external links
+	citecolor=blue,        % color of citation links
+	pdfborder={0 0 0},      % no border around links
+	breaklinks=true,
+	bookmarks=true,
+	bookmarksopen=true,
+	bookmarksnumbered=true,
+	bookmarksdepth=3
 }
+\setcounter{tocdepth}{2}
 
 % automatic reference naming
-\usepackage[capitalise]{cleveref}
+\usepackage[nameinlink,capitalize,noabbrev]{cleveref}
 
-\usepackage[english]{babel}%
-%
-% environments defs
-\theoremstyle{plain}%
-\newtheorem{theorem}{Theorem}[section]%
-\newtheorem{proposition}[theorem]{Proposition}%
-\newtheorem{corollary}{Corollary}[theorem]%
-\newtheorem{lemma}[theorem]{Lemma}%
-\newtheorem{property}[theorem]{Property}%
-\newtheorem{axiom}{Axiom}%
-\newtheorem{problem}{Problem}%
-\newtheorem{question}{Question}%
-\newtheorem{claim}{Claim}%
-%
-\theoremstyle{definition}%
-\newtheorem{definition}[theorem]{Definition}%
-\newtheorem{example}{Example}[section]%
-\newtheorem{counterexample}[example]{Counterexample}%
-\newtheorem{nonexample}[example]{Non-Example}%
-\newtheorem{impexample}[example]{Important Example}%
-\newtheorem{exercise}[example]{Exercise}%
-\newtheorem{construction}[theorem]{Construction}%
-%
-\theoremstyle{remark}%
-\newtheorem{remark}{Remark}[theorem]%
-%
+\usepackage[english]{babel}
+
+%  environments defs
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}{Corollary}[theorem]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{fact}[theorem]{Fact}
+\newtheorem{property}[theorem]{Property}
+\newtheorem{axiom}{Axiom}
+\newtheorem{problem}{Problem}
+\newtheorem{question}{Question}
+\newtheorem{claim}{Claim}
+
+\theoremstyle{definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{notation}[theorem]{Notation}
+\newtheorem{construction}[theorem]{Construction}
+\newtheorem{justunpacking}[theorem]{Unpacking}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{counterexample}[theorem]{Counterexample}
+\newtheorem{nonexample}[theorem]{Non-Example}
+\newtheorem{impexample}[theorem]{Important Example}
+\newtheorem{exercise}[theorem]{Exercise}
+
+% Redefine the theorem environment to accept an argument
+\makeatletter
+\newenvironment{unpacking}[1]
+  {\renewcommand\thejustunpacking{\cref{#1}}\justunpacking}
+  {\endjustunpacking}
+\makeatother
+
+\crefname{unpacking}{Unpacking}{Unpacking}
+\crefname{diagram}{Diagram}{Diagrams}
+\crefname{equation}{Equation}{Equations}
+
 % starred environments defs
-\theoremstyle{plain}%
-\newtheorem*{theorem*}{Theorem}%
-\newtheorem*{proposition*}{Proposition}%
-\newtheorem*{corollary*}{Corollary}%
-\newtheorem*{lemma*}{Lemma}%
-\newtheorem*{property*}{Property}%
-\newtheorem*{axiom*}{Axiom}%
-\newtheorem*{problem*}{Problem}%
-\newtheorem*{question*}{Question}%
-\newtheorem*{claim*}{Claim}%
-%
-\theoremstyle{definition}%
-\newtheorem*{definition*}{Definition}%
-\newtheorem*{example*}{Example}%
-\newtheorem*{counterexample*}{Counterexample}%
-\newtheorem*{nonexample*}{Non-Example}%
-\newtheorem*{impexample*}{Important Example}%
-\newtheorem*{exercise*}{Exercise}%
-\newtheorem*{construction*}{Construction}%
-%
-\theoremstyle{remark}%
-\newtheorem*{remark*}{Remark}%
+\theoremstyle{plain}
+\newtheorem*{theorem*}{Theorem}
+\newtheorem*{proposition*}{Proposition}
+\newtheorem*{corollary*}{Corollary}
+\newtheorem*{lemma*}{Lemma}
+\newtheorem*{property*}{Property}
+\newtheorem*{axiom*}{Axiom}
+\newtheorem*{problem*}{Problem}
+\newtheorem*{question*}{Question}
+\newtheorem*{claim*}{Claim}
 
-% uncomment for Palatino
-% \usepackage{tgpagella}
-% \usepackage{mathpazo}
+\theoremstyle{definition}
+\newtheorem*{definition*}{Definition}
+\newtheorem*{unpacking*}{Unpacking}
+\newtheorem*{example*}{Example}
+\newtheorem*{counterexample*}{Counterexample}
+\newtheorem*{nonexample*}{Non-Example}
+\newtheorem*{impexample*}{Important Example}
+\newtheorem*{exercise*}{Exercise}
+\newtheorem*{construction*}{Construction}
+\newtheorem*{remark*}{Remark}
 
 % symbols
-\usepackage{mathrsfs}
-\usepackage{amssymb, amsfonts}
-\usepackage{todonotes}
+% \usepackage{mathrsfs}
+% \usepackage{amssymb, amsfonts}
+% \usepackage{textcomp}
+% \usepackage{amsmath}
 \usepackage{fonttable}
 \usepackage{stmaryrd}
-\usepackage{wasysym}
+% \usepackage{wasysym}
 \usepackage{tabularx}
 \usepackage{expl3}
 \usepackage{xparse, xpatch}
 \usepackage{stackengine, stackrel, old-arrows}
+\usepackage{manfnt}
+\usepackage[matha]{mathabx}
+
+\usepackage{newpxtext}
+\usepackage{newpxmath}
+\usepackage[bb=px, oldbold]{mathalpha}
 
 \usepackage{quiver}
-\usepackage{tangle}
-
-\usepackage{kpfonts}
-\usepackage{newpxtext}
 
 % todos
-\newcommand{\matteo}[1]{\todo[inline,color=green!30]{\textbf{Matteo}: {#1}}}
+\newcommand{\matteo}[1]{\textcolor{red}{#1}}
 
 % scaled & centered figures
 \newcommand{\sctikzfig}[2][.8]{\begin{center}\scalebox{#1}{\tikzfig{#2}}\end{center}}
+
+% wide equations (for eqs in enums)
+\newcommand{\makeitwide}{\displayindent0pt\displaywidth\textwidth}
+
+\usepackage{scrextend}
+
+\AddToHook{env/equation/before}{%
+	\makeitwide%
+	\begin{addmargin*}[-3cm]{-2.25cm}
+	\setlength{\belowdisplayshortskip}{10pt}%
+}
+\AddToHook{env/equation/after}{%
+	\end{addmargin*}
+}
 
 % aligned equations
 \newenvironment{eqalign}{\begin{equation}\begin{aligned}}{\end{aligned}\end{equation}}
 \newenvironment{eqalign*}{\begin{equation*}\begin{aligned}}{\end{aligned}\end{equation*}}
 
-% wide equations (for eqs in enums)
-\newenvironment{eqwide}{\begin{equation}\displayindent0pt\displaywidth\textwidth}{\end{equation}}
-\newenvironment{eqalignwide}{\begin{eqalign}\displayindent0pt\displaywidth\textwidth}{\end{eqalign}}
-
-
-\tikzset{
-  relation/.style={
-    draw=none,
-    every to/.append style={
-      edge node={node [sloped, allow upside down, auto=false]{$#1$}}}
-  }
-}
-
-% common arrow styles
-\tikzcdset{
-  mono/.code={
-    \pgfsetarrows{tikzcd to reversed-tikzcd to}
-  }
-}
-\tikzcdset{
-  epi/.code={
-    \pgfsetarrowsend{tikzcd double to}
-  }
-}
-\tikzcdset{
-  into/.code={
-    \pgfsetarrows{tikzcd right hook-tikzcd to}
-  }
-}
-\tikzcdset{
-  twocell/.style={Rightarrow, shorten >= 3ex, shorten <= 3ex}
-}
-
-% comment on an equation
-\newcommand{\comment}[1]{\qquad\text{#1}}
+\newenvironment{eqcenter}{\begin{equation}\begin{gathered}}{\end{gathered}\end{equation}}
+\newenvironment{eqcenter*}{\begin{equation*}\begin{gathered}}{\end{gathered}\end{equation*}}
 
 % disjoint footnotes
 \newcommand{\disjointfootnotemark}[1]{\footnotemark[\getrefnumber{#1}]}
@@ -238,7 +229,7 @@
 }
 
 % fat semicolon
-\newcommand{\comp}{\fatsemi}
+\newcommand{\concat}{\fatsemi}
 
 % hyphen for math mode
 \mathchardef\dash="2D
@@ -258,9 +249,8 @@
 % cotangent
 \newcommand{\cotan}{\operatorname{cotan}}
 
-% argoptim
-\DeclareMathOperator{\argmin}{\mathrm{argmin}}
-\DeclareMathOperator{\argmax}{\mathrm{argmax}}
+% argmin
+\newcommand{\argmin}{\operatorname{argmin}}
 
 % 'does not imply' symbol
 \newcommand{\nimplies}{\centernot\implies}
@@ -274,10 +264,11 @@
 \newcommand{\liff}{\leftrightarrow}
 
 % inhabitation for types
-\newcommand{\inh}{\!\colon\!}
+\newcommand{\tin}{\!:\!}
 
 % inverses of \to
-\newcommand{\from}{\leftarrow}
+\newcommand{\ot}{\leftarrow}
+\newcommand{\from}{\ot}
 
 % long version of \to
 \newcommand{\longto}{\longrightarrow}
@@ -288,14 +279,16 @@
 
 % inclusion
 \newcommand{\into}{\hookrightarrow}
-\newcommand{\infrom}{\hookleftarrow}
+\newcommand{\inot}{\hookleftarrow}
 \newcommand{\monoto}{\rightarrowtail}
-\newcommand{\monofrom}{\leftarrowtail}
 
 % surjection
 \newcommand{\onto}{\twoheadrightarrow}
 \newcommand{\epito}{\twoheadrightarrow}
-\newcommand{\epifrom}{\twoheadleftarrow}
+
+% iso arrows
+\newcommand{\isoto}{\overset{\sim}\to}
+\newcommand{\isolongto}{\overset{\sim}\longto}
 
 % 2-morphisms
 \newcommand{\twoto}{\Rightarrow}
@@ -308,43 +301,38 @@
 
 \newcommand{\narrow}[2]{\overset{#1}{#2}}
 \newcommand{\nto}[1]{\xrightarrow{#1}}
-\newcommand{\nlongto}[1]{\xrightarrow{\;#1\;}}
+\newcommand{\nfrom}[1]{\xleftarrow{#1}}
 \newcommand{\ninto}[1]{\narrow{#1}{\into}}
+\newcommand{\nisoto}[1]{\narrow{#1}{\isolongto}}
 \newcommand{\nepito}[1]{\narrow{#1}{\epito}}
 \newcommand{\nmonoto}[1]{\narrow{#1}{\monoto}}
 
-\newcommand{\nfrom}[1]{\narrow{#1}{\from}}
-\newcommand{\nlongfrom}[1]{\xleftarrow{\;#1\;}}
-\newcommand{\ninfrom}[1]{\narrow{#1}{\infrom}}
-\newcommand{\nepifrom}[1]{\narrow{#1}{\epifrom}}
-\newcommand{\nmonofrom}[1]{\narrow{#1}{\monofrom}}
-
-\newcommand{\nisoto}[1]{\xrightarrow[\sim]{#1}}
-\newcommand{\nisofrom}[1]{\xleftarrow[\sim]{#1}}
-\newcommand{\isofrom}[1]{\nisofrom{}}
-\newcommand{\isoto}[1]{\nisoto{}}
-
 % profunctors
 \newcommand{\profto}{\stackMath\mathrel{\stackinset{c}{-0.25ex}{c}{0.25ex}{\shortmid}{\to}}}
-\newcommand{\longprofto}{\stackMath\mathrel{\stackinset{c}{-0.25ex}{c}{0.25ex}{\shortmid}{\longto}}}
+\newcommand{\longprofto}{\stackMath\mathrel{\stackinset{c}{-0.25ex}{c}{0.25ex}{\shortmid}{\longrightarrow}}}
 \newcommand{\nprofto}[1]{\narrow{#1}{\profto}}
+\newcommand{\profequalto}{\stackMath\mathrel{\stackinset{c}{-0.15ex}{c}{0.1ex}{\shortmid}{\equalto}}}
 
 % double categories
-\newcommand{\horto}{\longto}
-\newcommand{\verto}{\stackMath\mathrel{\stackinset{c}{0ex}{c}{0.05ex}{\bullet}{\longto}}}
-\newcommand{\nhorto}[1]{\narrow{#1}{\horto}}
-\newcommand{\nverto}[1]{\narrow{#1}{\verto}}
+\newcommand{\tightto}{\longto}
+\newcommand{\looseto}{\stackMath\mathrel{\stackinset{c}{-0.15ex}{c}{0.1ex}{\loosemarking}{\longto}}}
+\newcommand{\slackto}{\stackMath\mathrel{\stackinset{c}{-0.15ex}{c}{0.1ex}{\slackmarking}{\longto}}}
+\newcommand{\loosetwoto}{\stackMath\mathrel{\stackinset{c}{-0.15ex}{c}{0.1ex}{\loosemarking}{\twoto}}}
+\newcommand{\ntightto}[1]{\narrow{#1}{\tightto}}
+\newcommand{\nlooseto}[1]{\narrow{#1}{\looseto}}
+\newcommand{\nslackto}[1]{\narrow{#1}{\slackto}}
+\newcommand{\lequalto}{\stackMath\mathrel{\stackinset{c}{-0.15ex}{c}{0.1ex}{\loosemarking}{\equalto}}}
+\newcommand{\sequalto}{\stackMath\mathrel{\stackinset{c}{-0.15ex}{c}{0.1ex}{\slackmarking}{\equalto}}}
 
 % optics
-\newcommand{\opticto}{\leftrightarrows}
+\newcommand{\lensto}{\leftrightarrows}
 \newcommand{\chartto}{\rightrightarrows}
+\newcommand{\chartfrom}{\leftleftarrows}
 \newcommand{\equalto}{=\mathrel{\mkern-3mu}=}
 \newcommand{\nequalto}[1]{\overset{#1}{\equalto}}
-\newcommand{\nopticto}[2]{\overset{#1}{\underset{#2}\opticto}}
+\newcommand{\nlensto}[2]{\overset{#1}{\underset{#2}\lensto}}
 \newcommand{\nchartto}[2]{\overset{#1}{\underset{#2}\chartto}}
-
-% 'a | b'
-\newcommand{\divides}{\,|\,}
+\newcommand{\nchartfrom}[2]{\overset{#1}{\underset{#2}\chartfrom}}
 
 % constant function
 \newcommand{\cost}{\text{cost.}}
@@ -368,36 +356,6 @@
 \newcommand{\Q}{\mathbb{Q}}
 \newcommand{\R}{\mathbb{R}}
 \newcommand{\C}{\mathbb{C}}
-
-% set-theoretic stuff
-\newcommand{\card}[1]{\left|{#1}\right|}
-\newcommand{\parts}[1]{\mathcal{P}\left({#1}\right)}
-\newcommand{\continuum}{\mathfrak{c}}
-
-% diameter of a set
-\newcommand{\diam}{\operatorname{diam}}
-
-% vectors
-\newcommand{\vers}[1]{\hat{\vv{#1}}}
-
-\newcommand{\ii}{\vers{i}}
-\newcommand{\jj}{\vers{j}}
-\newcommand{\kk}{\vers{k}}
-
-\newcommand{\xx}{\vv{x}}
-\newcommand{\yy}{\vv{y}}
-\newcommand{\zz}{\vv{z}}
-
-% big kernel, cokernel & image
-\newcommand{\Ker}{\operatorname{Ker}}
-\newcommand{\coker}{\operatorname{coker}}
-\newcommand{\Imm}{\operatorname{Im}}
-\newcommand{\im}{\operatorname{im}}
-
-% action of a group
-\newcommand{\acts}{\curvearrowright}
-% weak action groupoid
-\newcommand{\wag}{\mathbin{/\mkern-6mu/}}
 
 % direct sum
 \newcommand{\dir}{\oplus}
@@ -447,10 +405,6 @@
 \newcommand{\Arg}{\operatorname{Arg}}
 \newcommand{\Res}{\operatorname{Res}}
 
-% real and imaginary parts
-\renewcommand{\Re}[1]{\mathfrak{Re}\left(#1\right)}
-\renewcommand{\Im}[1]{\mathfrak{Im}\left(#1\right)}
-
 % sign function
 \newcommand{\sign}{\operatorname{}{sgn}}
 
@@ -485,29 +439,35 @@
   \fi
 }
 
-\usepackage{xstring}
-\newcommand{\cat}[1]{
-  \relax
-  \StrLen{#1}[\catarglen]
-  \ifnum\catarglen=1
-    \mathcal{#1}
-  \else
-    \mathbf{#1}
-  \fi
-}
-\newcommand{\dblcat}[1]{\cat{\mathbb #1}}
+% \usepackage{xstring}
+% \newcommand{\cat}[1]{
+%   \relax
+%   \StrLen{#1}[\catarglen]
+%   \ifnum\catarglen=1
+% 	\mathcal{#1}
+%   \else
+% 	\mathbf{#1}
+%   \fi
+% }
+\newcommand{\cat}[1]{{\mathbf{#1}}}
+\newcommand{\dblcat}[1]{\cat{\mathbfbb #1}}
 \newcommand{\trplcat}[1]{\cat{\mathfrak #1}}
 
 \newcommand{\dblSet}{\dblcat{Set}}
+\newcommand{\trplSet}{\trplcat{Set}}
 \newcommand{\dblCat}{\dblcat{Cat}}
+
+\newcommand{\TwoCat}{{\boldsymbol{2}\dblCat}}
+\newcommand{\Bicat}{\trplcat{Bicat}}
 
 \newcommand{\Poly}{\cat{Poly}}
 
 \newcommand{\dist}{\Delta}
 \newcommand{\pow}{\mathcal{P}}
 
-\newcommand{\cod}{\mathrm{cod}}
-\newcommand{\dom}{\mathrm{dom}}
+\newcommand{\dom}{{\partial_0}}
+\newcommand{\cod}{{\partial_1}}
+\newcommand{\arr}{{\mathsf{\partial_{01}}}}
 
 \newcommand{\st}{\mathrm{st}}
 
@@ -523,6 +483,10 @@
 \newcommand{\coplay}{\mathsf{coplay}}
 
 \newcommand{\name}[1]{\lceil #1 \rceil}
+\DeclareMathOperator{\argmax}{\mathrm{argmax}}
+
+% finite stuff
+\newcommand{\fin}{\mathsf{fin}}
 
 % identity
 \newcommand{\identity}{\mathrm{id}}
@@ -545,13 +509,18 @@
 % Kan extensions
 \newcommand{\Lan}{\operatorname{Lan}}
 \newcommand{\Ran}{\operatorname{Ran}}
+\newcommand{\lan}{\operatorname{lan}}
+\newcommand{\ran}{\operatorname{ran}}
+
 
 % big categories
 \newcommand{\Cat}{\cat{Cat}}
 \newcommand{\Prof}{\cat{Prof}}
 
 \newcommand{\Set}{\cat{Set}}
-\newcommand{\FinSet}{\cat{FinSet}}
+\newcommand{\FinSet}{\cat{Set}_\fin}
+\newcommand{\Fam}{\cat{Fam}}
+\newcommand{\FinFam}{\cat{Fam}_\fin}
 
 \newcommand{\Mon}{\cat{Mon}}
 \newcommand{\CMon}{\cat{CMon}}
@@ -566,16 +535,21 @@
 \newcommand{\Euc}{\cat{Euc}}
 \newcommand{\Smooth}{\cat{Smooth}}
 
-% opposite category
-\newcommand{\op}{\mathsf{op}}
-\newcommand{\co}{\mathsf{co}}
-\newcommand{\coop}{\mathsf{coop}}
+% dualities
+\newcommand{\re}{{\mathsf{re}}}
+\newcommand{\co}{{\mathsf{co}}}
+\newcommand{\op}{{\mathsf{op}}}
+\newcommand{\opre}{{\mathsf{reop}}}
+\newcommand{\core}{{\mathsf{reco}}}
+\newcommand{\coop}{{\mathsf{coop}}}
+\newcommand{\recoop}{{\mathsf{recoop}}}
 
-\newcommand{\Span}{\cat{Span}}
-\newcommand{\Para}{\cat{Para}}
-\newcommand{\Copara}{\cat{Copara}}
+\newcommand{\rev}{{\mathsf{rev}}}
+\newcommand{\lop}{{\mathsf{lop}}}
+\newcommand{\iop}{{\mathsf{top}}}
+\newcommand{\ltop}{{\mathsf{ltop}}}
+
 \newcommand{\Optic}{\cat{Optic}}
-\newcommand{\Lens}{\cat{Lens}}
 \newcommand{\DLens}{\cat{DLens}}
 \newcommand{\DChart}{\cat{DChart}}
 
@@ -583,27 +557,23 @@
 
 \newcommand{\MonCat}{\cat{MonCat}}
 \newcommand{\SymMonCat}{\cat{SymMonCat}}
+\newcommand{\Cart}{\cat{Cart}}
 \newcommand{\Fib}{\cat{Fib}}
-\newcommand{\OpFib}{\cat{OpFib}}
-\newcommand{\Kl}{\cat{Kl}}
-\newcommand{\coKl}{\cat{coKl}}
-\newcommand{\biKl}{\cat{biKl}}
 
-\newcommand{\Alg}[1]{{#1}\dash\cat{Alg}}
-\newcommand{\Coalg}[1]{{#1}\dash\cat{Coalg}}
-\newcommand{\Bialg}[2]{({#1},{#2})\dash\cat{BiAlg}}
+\newcommand{\Kl}{\dblcat{Kl}}
+\newcommand{\Alg}{\dblcat{Alg}}
 
-\newcommand{\lax}{\mathrm{lx}}
-\newcommand{\oplax}{\mathrm{ox}}
-\newcommand{\pseudo}{\mathrm{ps}}
-\newcommand{\strict}{\mathrm{s}}
-\newcommand{\cart}{\mathrm{cart}}
-\newcommand{\ver}{\mathrm{vert}}
+\newcommand{\lax}{\mathsf{lx}}
+\newcommand{\colax}{\mathsf{cx}}
+\newcommand{\pseudo}{\mathsf{ps}}
+\newcommand{\strict}{\mathsf{s}}
+\newcommand{\cart}{\mathsf{cart}}
+\newcommand{\ver}{\mathsf{vert}}
+\newcommand{\disp}{\mathsf{disp}}
 
 \newcommand{\VCat}[1]{{#1}\dash\Cat}
 
-\newcommand{\rev}{\mathrm{rev}}
-\newcommand{\swap}{\mathrm{swap}}
+\newcommand{\swap}{\mathsf{swap}}
 
 \newcommand{\colim}{\operatorname{colim}}
 
@@ -624,25 +594,364 @@
 \newcommand{\doubleflat}{{\raisebox{.6ex}{\textmusix{3}}}}
 \newcommand{\doublesharp}{{\raisebox{.6ex}{\textmusix{5}}}}
 
-\newcommand{\dblSpan}{\dblcat{Span}}
-\newcommand{\DblCat}{\dblcat{DblCat}}
-\newcommand{\DblIx}{\dblcat{Dbl}\dblcat{Ix}}
-\newcommand{\MonDblIx}{\dblcat{Mon}\dblcat{Dbl}\dblcat{Ix}}
+% fibrations
+\newcommand{\pull}{\mathsf{pull}}
+\newcommand{\push}{\mathsf{push}}
+\newcommand{\lift}{\mathsf{lift}}
+\newcommand{\counitpull}{\lambda}
+\newcommand{\unitpull}{\eta}
 
-\newcommand{\sys}{\mathsf}
-\newcommand{\systh}{\mathbf}
+% arrow monad
+\newcommand{\unitarrow}{\internal{\id}}
+\newcommand{\multarrow}{\internal{\circ}}
 
+% 2-cats
+\newcommand{\DispSlice}[2]{\{{#1} \underset{\disp}{\twoto} {#2}\}}%{#1 /_{\!d}\, #2}
+
+\newcommand{\comma}[2]{\{{#1} \twoto {#2}\}}
+\newcommand{\isocomma}[2]{\{{#1} \isotwoto {#2}\}}
+\newcommand{\pb}[2]{\{{#1} = {#2}\}}
+
+\newcommand{\internal}[1]{\ulcorner{#1}\urcorner}
+
+\newcommand{\generic}{\chi}
+\newcommand{\isogeneric}{\widetilde{\chi}}
+
+\newcommand{\walkingcomposite}{\boldsymbol{3}}
+\newcommand{\walkingarrow}{\downarrow}%{{\boldsymbol{2}}}
+\newcommand{\walkingobj}{\mathsf{pt}}%{{\boldsymbol{1}}}
+\newcommand{\walkingloosearrow}{{\stackMath\mathrel{\stackinset{c}{0ex}{c}{0.05ex}{\scalebox{.6}{$\loosemarking$}}{\downarrow}}}}
+\newcommand{\walkingsubobj}{\downsubseteq}
+
+% dbl cats
+\newcommand{\slackmarking}{\circ}%{\mathchoice{\circ}{\circ}{\scalebox{1.3}{$\circ$}}{\scalebox{1.3}{$\circ$}}}
+\newcommand{\loosemarking}{\bullet}
+\newcommand{\profmarking}{\shortmid}
+
+\newcommand{\lcomp}{\odot}
+\newcommand{\scomp}{\ocirc}
+\newcommand{\tcomp}{}
+\newcommand{\lid}{1}
+\newcommand{\tid}{\id}
+
+\newcommand{\llunitor}{\lambda}
+\newcommand{\lrunitor}{\rho}
+\newcommand{\lassociator}{\alpha}
+
+\newcommand{\src}{s}
+\newcommand{\tgt}{t}
+
+\newcommand{\loose}{{\mathsf{loose}}}
+\newcommand{\tight}{{\mathsf{tight}}}
+
+\newcommand{\LooseSlice}[2]{\{{#1} \loosetwoto {#2}\}}%{{#1}\!\underset{\loose}{/}\!\!{#2}}
+\newcommand{\RestrictedLooseSlice}[2]{\overline{\{{#1} \loosetwoto {#2}\}}}
+\newcommand{\TightSlice}[2]{\{{#1} \twoto {#2}\}}%{{#1}\!\underset{\tight}{/}\!\!{#2}}
+
+\newcommand{\SymMonDblCat}{{\dblcat{Sym}\dblcat{Mon}\DblCat}}
+
+\newcommand{\One}{{\mathbf{1}}}
+\newcommand{\mlunitor}{\ell}
+\newcommand{\mrunitor}{r}
+\newcommand{\massociator}{a}
+\newcommand{\symmetry}{s}
+
+\newcommand{\compositor}{\kappa}
+\newcommand{\munitor}{\epsilon}
+\newcommand{\mmultiplicator}{\nu}
+
+% theory of systems
+\newcommand{\unitor}{\eta}
+\newcommand{\associator}{\mu}
+
+\newcommand{\laxator}{\ell}
+
+% systems theory
+\newcommand{\compth}[1]{\dblcat{#1}}
+\newcommand{\systh}[1]{\mathbf{#1}}
+\newcommand{\doc}[1]{\mathfrak{#1}}
+
+\newcommand{\Paradigm}{{(\dblcat{E}, T)}}
+\newcommand{\Doc}{{\doc{Doc}}}
 \newcommand{\Processes}{\dblcat{P}}
-\newcommand{\CyberProcesses}{\trplcat{P}}
+\newcommand{\Sys}{{\systh{Sys}}}
+\newcommand{\Comp}{{\compth P}}
 
-\newcommand{\Sys}{\systh{Sys}}
-\newcommand{\Cyb}{\cat{Cyb}}
-\newcommand{\CybSys}{\cat{CybSys}}
+\newcommand{\lst}[1]{\underline{#1}}
+
+\newcommand{\Cyb}{\systh{Cyb}}
+\newcommand{\Cont}{\systh{Cont}}
+\newcommand{\Plnt}{\systh{Plnt}}
+\newcommand{\CybProcesses}{{\compth C}}
+\newcommand{\CybComp}{{\trplcat C}}
 
 \newcommand{\doctrine}{\mathfrak{D}}
 \newcommand{\theory}{\mathbb{T}}
-\newcommand{\Theories}{\dblcat{Theories}}
-\newcommand{\Behaviour}{\cat{B}}
+\newcommand{\CompTheories}{{\dblcat{Comp}\dblcat{Th}}}
+\newcommand{\SysTheories}[1][{}]{{\dblcat{Sys}\dblcat{Th}_{#1}}}
 
-\newcommand{\Obs}{\systh{Obs}}
+\newcommand{\DblCat}{{\dblcat{Dbl}\Cat}}
+\newcommand{\DblIx}{{\dblcat{Dbl}\dblcat{Ix}}}
+\newcommand{\MonDblIx}{{\dblcat{Mon}\dblcat{Dbl}\dblcat{Ix}}}
+
+\newcommand{\SymOperads}{{\sf sm}}
+\newcommand{\SymDblOperads}{{\sf smc}}
+
+\newcommand{\dblSys}{{\dblcat{Sys}}}
+
+\newcommand{\unilaxto}{\nto{\text{unitary lax}}}
+\newcommand{\theoryover}[1]{{#1}^\top \nto{\text{unitary lax}} \dblCat}
+
+\newcommand{\sys}[1]{\mathsf{#1}}
+
+\newcommand{\BehComp}{\dblSet}
+\newcommand{\BehCybComp}{\trplSet}
+\newcommand{\BehSys}{\BehComp^\walkingarrow}
+\newcommand{\BehCyb}{\BehCybComp^\walkingarrow}
+
+\newcommand{\Lens}{\dblcat{Lens}}
+\newcommand{\ndLens}{\dblcat{Lens}_\pow}
+
 \newcommand{\Moore}{\systh{Moore}}
+\newcommand{\ndMoore}{\systh{Moore}_\pow}
+\newcommand{\dblMoore}{\dblcat{Moore}}
+
+\renewcommand{\Alph}{\dblcat{Alph}}
+\newcommand{\Int}{\cat{Int}}
+\newcommand{\Coalg}{\systh{Coalg}}
+\newcommand{\Trans}{\systh{Trans}}
+\newcommand{\DynSys}{\systh{DynSys}}
+\newcommand{\FSM}{\systh{FSM}}
+\newcommand{\Mealy}{\systh{Mealy}}
+\newcommand{\Petri}{\systh{Petri}}
+\newcommand{\ODE}{\systh{ODE}}
+\newcommand{\Rel}{\dblcat{Rel}}
+
+% behaviours
+\newcommand{\Behaviour}{B}
+\newcommand{\States}{X}
+\newcommand{\Trajs}{J}
+\newcommand{\Fixpts}{F}
+
+\newcommand{\Blackbox}{\blacksquare}
+
+\newcommand{\dblEnd}{\dblcat{End}}
+
+\newcommand{\expose}{v}
+\newcommand{\update}{v^\sharp}
+% \newcommand{\observe}{\mathsf{observe}}
+\newcommand{\Fix}{\sys{Fix}}
+\newcommand{\Trivial}{{\sys{1}}}
+\newcommand{\Clock}{{\sys{Clock}}}
+\newcommand{\Time}{\sys{Time}}
+
+\newcommand{\nreachto}[1]{\narrow{#1}{\rightsquigarrow}}
+
+\newcommand{\Psh}{\cat{Psh}}
+
+% diagrams
+\newcommand{\LargeSquareDiagram}[9]{
+	\begin{tikzcd}[ampersand replacement=\&]
+		{#1} \&\& {#2} \\
+		\\
+		{#4} \&\& {#3}
+		\arrow["{#5}", from=1-1, to=1-3]
+		\arrow[""{name=0, anchor=center, inner sep=0}, "{#8}"', "\loosemarking"{marking}, from=1-1, to=3-1]
+		\arrow[""{name=1, anchor=center, inner sep=0}, "{#6}", "\loosemarking"{marking}, from=1-3, to=3-3]
+		\arrow["{#7}"', from=3-1, to=3-3]
+		\arrow["{#9}", shorten <=13pt, shorten >=13pt, Rightarrow, from=0, to=1, shift right=0.75]
+	\end{tikzcd}
+}
+\newcommand{\SmallSquareDiagram}[9]{
+	\begin{tikzcd}[ampersand replacement=\&,cramped,sep=small]
+		{#1} \&\& {#2} \\[-2pt]
+		\\[-2pt]
+		{#4} \&\& {#3}
+		\arrow["{#5}", from=1-1, to=1-3]
+		\arrow[""{name=0, anchor=center, inner sep=0}, "{#8}"', "\loosemarking"{marking}, from=1-1, to=3-1]
+		\arrow[""{name=0p, anchor=center, inner sep=0}, phantom, from=1-1, to=3-1, start anchor=center, end anchor=center]
+		\arrow[""{name=1, anchor=center, inner sep=0}, "{#6}", "\loosemarking"{marking}, from=1-3, to=3-3]
+		\arrow[""{name=1p, anchor=center, inner sep=0}, phantom, from=1-3, to=3-3, start anchor=center, end anchor=center]
+		\arrow["{#7}"', from=3-1, to=3-3]
+		\arrow["{#9}", shorten <=8pt, shorten >=8pt, Rightarrow, from=0, to=1, shift right=0.75]
+	\end{tikzcd}
+}
+
+% various constructions
+\newcommand{\Span}{\dblcat{Span}}
+\newcommand{\Cospan}{\dblcat{Cospan}}
+\newcommand{\TriSpan}{\trplcat{Span}}
+\newcommand{\FibSpan}{{\cat{f}\TriSpan}}
+\newcommand{\OpfibSpan}{{\cat{o}\TriSpan}}
+\newcommand{\PsCat}{{\trplcat{Ps}\trplcat{Cat}}}
+
+\newcommand{\Ctx}{\trplcat{{Ctx}}}
+\newcommand{\Eff}{\trplcat{{Eff}}}
+\newcommand{\DispSpan}{{\cat{d}\TriSpan}}
+
+\newcommand{\Comnd}{\dblcat{Comnd}}
+
+\newcommand{\Para}{\dblcat{Para}}
+\newcommand{\Copara}{\dblcat{Copara}}
+
+\newcommand{\dblKl}{\dblcat{Kl}}
+\newcommand{\dblAlg}{\dblcat{Alg}}
+
+% fibred actions
+\newcommand{\acted}{\dblcat C}
+\newcommand{\actor}{\dblcat E}
+\newcommand{\combine}{\mathbin{\otimes}}
+\newcommand{\combineunit}{I}
+\newcommand{\action}{\mathbin{\lhd}}
+
+\newcommand{\lineator}{\lambda}
+\newcommand{\colineator}{\kappa}
+
+\newcommand{\scaledtriangle}{\mathchoice%
+  {\scalebox{1.05}{$\triangle$}}%
+  {\scalebox{1.1}{$\triangle$}}%
+  {\scalebox{1.05}{$\triangle$}}%
+  {\scalebox{1.03}{$\triangle$}}%
+}
+\newcommand{\mapunitor}{\eta}%{{\scaledtriangle}}
+\newcommand{\mapmultiplicator}{\mu}%{{\pentagon}}
+
+\newcommand{\counitor}{\varepsilon}
+\newcommand{\comultiplicator}{\delta}
+\newcommand{\coassociator}{\delta}
+
+\newcommand{\monoidal}{\mathbin{\boxtimes}}
+\newcommand{\monoidalunit}{\One}
+\newcommand{\monoidalunitor}{\upsilon}
+\newcommand{\monoidalassociator}{\alpha}
+
+\newcommand{\monoidalinterch}{x}
+\newcommand{\monoidalinterchunit}{u}
+
+\newcommand{\leftunitlaw}{\lambda}
+\newcommand{\rightunitlaw}{\rho}
+\newcommand{\associativitylaw}{\alpha}
+
+\newcommand{\spancomp}{\mathbin{\rotatebox[origin=c]{90}{$\ltimes$}}}
+\newcommand{\isospancomp}{\mathbin{\dot{\rotatebox[origin=c]{90}{$\ltimes$}}}}
+
+\newcommand{\downiso}{{\rotatebox[origin=c]{-90}{$\cong$}}}
+\newcommand{\downsubseteq}{{\rotatebox[origin=c]{-90}{$\subseteq$}}}
+
+\newcommand{\consdownarrows}{\begin{smallmatrix}\downarrow\\[-0.2ex]\downarrow\end{smallmatrix}}
+
+% completions and wreath product
+\newcommand{\Mnd}{\dblcat{Mnd}}%{\trplcat{KL}}
+\newcommand{\KL}{\mathsf{KL}}%{\trplcat{KL}}
+\newcommand{\EM}{\mathsf{EM}}%{\trplcat{EM}}
+\newcommand{\wreath}{\wr}
+
+% restriction to functorial spans
+\newcommand{\fun}{{\mathsf{fun}}}
+\newcommand{\opfun}{{\mathsf{opfun}}}
+
+% adjunctions
+\newcommand{\unit}{\eta}
+\newcommand{\counit}{\epsilon}
+
+% monads
+\newcommand{\monad}{s}
+\newcommand{\unitmnd}{\upsilon}
+\newcommand{\multmnd}{\mu}
+
+\newcommand{\intertwiner}{w}
+
+\newcommand{\Cosmos}{\Kb}
+\newcommand{\Display}{\Da}
+\newcommand{\Paradise}{(\Cosmos,\Display)}
+\newcommand{\DualParadise}{(\Cosmos\co,\Display)}
+
+% commas & isocommas
+\newcommand{\InclusionTrifun}{(-,\, (-)^\downarrow)}%{I}
+\newcommand{\DualInclusionTrifun}{(-,\, (-)^\uparrow)}%{I}
+
+\newcommand{\colaxity}[1]{\overline{#1}}
+
+\newcommand{\simple}{\mathsf{Simp}}
+\newcommand{\subm}{\mathsf{Subm}}
+\newcommand{\Subm}{\Smooth^\backdown}
+
+% colax fibred actions
+\newcommand{\CxFibAct}{\trplcat{Cx}\trplcat{Fib}\trplcat{Act}}
+\newcommand{\LxOpfibAct}{\trplcat{Lx}\trplcat{Opfib}\trplcat{Act}}
+
+\newcommand{\extch}{\mathbin{\&}}
+
+% fact system
+\newcommand{\leftclass}{{\La}}
+\newcommand{\rightclass}{{\Ra}}
+
+\newcommand{\quintets}[1]{{\dblcat{Q}(#1)}}
+\newcommand{\looseleftto}[1][]{\begin{tikzcd}[ampersand replacement=\&,cramped,sep=small]
+  {} \&[1ex] {}
+  \arrow["{#1}", "\shortmid"{marking,pos=0.4}, two heads, from=1-1, to=1-2]
+\end{tikzcd}}
+\newcommand{\looserightto}[1][]{\begin{tikzcd}[ampersand replacement=\&,cramped,sep=small]
+  {} \&[1ex] {}
+  \arrow["{#1}", "\shortmid"{marking}, tail, from=1-1, to=1-2]
+\end{tikzcd}}
+
+% doctrines of wreaths
+\newcommand{\AdTrpl}{{\trplcat{Ad}\trplcat{Trpl}}}
+
+\newcommand{\forwto}{\rightarrowtail}
+\newcommand{\backto}{\twoheadrightarrow}
+\newcommand{\forwdown}{{\rotatebox[origin=c]{-90}{$\rightarrowtail$}}}
+\newcommand{\backdown}{{\rotatebox[origin=c]{-90}{$\twoheadrightarrow$}}}
+
+\newcommand{\FunWreaths}{\trplcat{Wrt}_\fun}
+\newcommand{\Ctxad}{\trplcat{Ctd}}
+
+% synthetic pullback operation
+\newcommand{\tow}[1]{#1 \cdot}
+\newcommand{\combineunitcart}{\upsilon}
+\newcommand{\combinecart}{\kappa}
+
+\newcommand{\LooseArrow}[1]{{#1}^\walkingloosearrow}
+% \newcommand{\RestrictedLooseArrow}[1]{\overline{#1}^\walkingloosearrow}
+
+\newcommand{\Cubes}[1]{{#1}^{\scalebox{.75}{\mancube}}}
+% \newcommand{\Ravioli}[1]{{#1}^{ravioli}}
+
+\newcommand{\simp}{\ltimes}
+\newcommand{\sel}{\mathsf{sel}}
+
+\newcommand{\image}{\operatorname{im}}
+\newcommand{\Prod}{\cat{Prod}}
+
+\newcommand{\etale}{\mathsf{ét}}
+\newcommand{\React}{\mathrm{React}}
+\newcommand{\ErgKit}{\systh{ErgKit}}
+\newcommand{\ErgSys}{\systh{Erg}}
+\newcommand{\dblSmooth}{\dblcat{Smooth}}
+\newcommand{\dblEtale}{\dblcat{{\acute{E}}tale}}
+\newcommand{\ReactSys}{\systh{React}}
+
+\newcommand{\Goals}{\systh{Goals}}
+\newcommand{\Pred}{\systh{Pred}}
+\newcommand{\IntGoals}{\cat{IntGoals}}
+\newcommand{\PerfReg}{\cat{PerfReg}}
+
+\newcommand{\GoalsFib}{\pi}
+\newcommand{\Sh}{\cat{Sh}}
+
+\newcommand{\fst}{\mathsf{fst}}
+
+\newcommand{\states}{\mathsf{states}}
+\newcommand{\trajectories}{\mathsf{trajs}}
+
+\newcommand{\always}{\square}
+\newcommand{\eventually}{\diamondsuit}
+
+\newcommand{\SysTh}{\dblcat{Sys}\dblcat{Th}}
+
+\newcommand{\sem}[1]{\llbracket{#1}\rrbracket}
+\newcommand{\then}{\fatsemi}
+
+\newcommand{\entails}{\vdash}
+\newcommand{\sementails}{\vDash}

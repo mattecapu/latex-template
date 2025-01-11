@@ -7,14 +7,619 @@
 \allowdisplaybreaks
 \raggedbottom
 
-\title{}
-\author{}
+\title{Doubly-Categorical Systems Logic}
+\author{Matteo Capucci}
 \date{}
 
 \begin{document}
 	\maketitle
 
+	\tableofcontents
 
+	\section{Introduction}
+	Pnueli \cite{pnueliTemporalLogicPrograms1977} classifies logics dealing with systems in two classes.
+	In \emph{endogenous} logics,
+	\begin{quotation}
+		we immerse ourselves in a single program which we regard as the universe, and concentrate on possible developments within that universe. Characteristic of this approach is the first phase which translates the programming features into general rules of behavior which we later logically analyze
+	\end{quotation}
+	while \emph{exogenous} logics
+	\begin{quotation}
+		suggest a uniform formalism which deals in formulas whose constituents are both logical assertions and program segments, and can express very rich relations between programs and assertions.
+	\end{quotation}
+
+	Both classes count numerous members, the first being also known as `temporal' and the latter as `dynamic'.
+
+	\subsection{Categorical logic}
+	Categorical logic is the study of the `invariant' or `objective' content of logic through categorical methods.
+	It is based on the observation that there is a strong relationship between categorical and logical structures, and that phrasing the latter in terms of the first allows the logician to readily assess the relative status of different structures, models, and syntaxes.
+
+	That said, categorical logic does not have a single coherent theory encompassing the whole of logic, but instead if more of an attitude than a coherent whole.
+	There are, of course, many successful and self-coherent approaches to various aspects of logic, starting from the word of Lambek in relating proof theoretic techniques to algebraic 2-structure on categories, Lawvere's seminal work on algebraic theories and first-order logic, the entirety of topos-theoretic logic, with application to realizability, geometric logic, and constructive and synthetic mathematics, and last but not least for this work the mature body of works on coalgebraic modal logic.
+
+	However, the metatheory of this all is, to the best of my knowledge, not coherently worked out anywhere.
+	There are ideas coming from Lawvere, Shulman, and others, on how various `levels' of logical entities fit together, with theories being instances of doctrines and instantiated in models, and so on, but this classification is not well-developed anywhere and certainly does not form a \emph{mathematical} bedrock on which the aforementioned bodies of work anchored their foundations.
+
+	So here we propose a modest attempt at unifying various threads we have seen in the literature, especially to unify two manners of doing semantics which come up in applications of logic quite often.
+
+	The first is by axiomatizing a \textbf{satisfaction relation} $\models$ between a collection of `structures' (often called `models', though here that would end up being quite confusing) and one of `sentences'.
+	Kripke semantics is the most eminent example, if not \emph{the} example, of this style of semantics.
+	There a (modal) logic is paired with a class of (Kripke) frames (the \emph{structures}) and $X \models \varphi$ is defined by induction on the structure of $\varphi$ and $X$---thus being an example of Tarskian semantics, i.e. one in which internal validity is remitted to external validity.
+	This way of doing semantics is particularly popular in computer science, since Kripke semantics is the standard semantics of modal logic, thus over transition systems of sorts, PDL, and variants thereof.
+
+	The second is by instead translating sentences into structures, thus defining so-called \emph{Scott brackets} $\sem{-}$ \cite{rabernHistoryUseNotation2017}, which are again defined by induction on the structure of formulae.
+	This way of doing semantics is (implicitely) the default in classical approaches to categorical logic, coming from Lawverian ideas.
+	Indeed, $\sem{-}$ is nothing but a morphism of theories from a (usually) `syntactic' theory to a `semantic' one.
+	For instance, one might present a theory (with respect to a background metatheory) by generators and relations (e.g. `a commuting pair of elements in a group', presented as ${\Z[a,b]=\langle a,b \mid ab=ba \rangle}$), thus creating a `syntactic' (or just `free') theory.
+	Mapping out of this model then gives models of such a theory into others (e.g. maps $\Z[a,b] \to G$, for $G$ group, are models of the `theory of commuting pairs of elements in a group').
+
+	How do reconcile these two approaches to semantics?
+	It is easier to answer by showing directly the math.
+
+	\begin{definition}
+		Let a \textbf{doctrine} be a virtual equipment with attitude.
+		Its objects will be called \textbf{theories}, its maps \textbf{semantics maps}, its arrows \textbf{semantic relations}, and its squares \textbf{maps of semantic relations}.
+	\end{definition}
+
+	Recall a virtual equipment \cite[Definition~7.6]{cruttwell_unified_2010} is a virtual double category with all units and restrictions.
+	Units are loose arrows representing nullary squares:
+	\begin{equation}
+			% https://q.uiver.app/#q=WzAsMyxbMSwwLCJYIl0sWzAsMSwiWCJdLFsyLDEsIlgiXSxbMSwyLCJVX1giLDIseyJsZXZlbCI6Miwic3R5bGUiOnsiYm9keSI6eyJuYW1lIjoiYmFycmVkIn0sImhlYWQiOnsibmFtZSI6Im5vbmUifX19XSxbMCwxLCIiLDAseyJsZXZlbCI6Miwic3R5bGU...
+			\begin{tikzcd}[ampersand replacement=\&, sep=scriptsize]
+				\& \cat{X} \\
+				\cat{X} \&\& \cat{X}
+				\arrow[equals, from=1-2, to=2-1]
+				\arrow[equals, from=1-2, to=2-3]
+				\arrow[""{name=0, anchor=center, inner sep=0}, "{U_X}"', "\shortmid"{marking}, equals, from=2-1, to=2-3]
+				\arrow[shorten <=5pt, shorten >=5pt, "\cart", Rightarrow, from=1-2, to=0]
+			\end{tikzcd}
+		\end{equation}
+		such that
+		\begin{equation}
+			% https://q.uiver.app/#q=WzAsNyxbMiwwLCJYIl0sWzAsMSwiQSciXSxbNCwxLCJCJyJdLFswLDAsIkEiXSxbMSwwLCJcXGNkb3RzIl0sWzMsMCwiXFxjZG90cyJdLFs0LDAsIkIiXSxbMSwyLCJTIiwyLHsic3R5bGUiOnsiYm9keSI6eyJuYW1lIjoiYmFycmVkIn0sImhlYWQiOnsibmFtZSI...
+			\begin{tikzcd}[ampersand replacement=\&, column sep=small]
+				\cat{A} \& \cdots \& \cat{X} \& \cdots \& \cat{B} \\
+				{\cat{A'}} \&\&\&\& {\cat{B'}}
+				\arrow["{R_1}", "\shortmid"{marking}, no head, from=1-1, to=1-2]
+				\arrow["f"', from=1-1, to=2-1]
+				\arrow["{R_n}", "\shortmid"{marking}, no head, from=1-2, to=1-3]
+				\arrow["{L_1}", "\shortmid"{marking}, no head, from=1-3, to=1-4]
+				\arrow["{L_m}", "\shortmid"{marking}, no head, from=1-4, to=1-5]
+				\arrow["g", from=1-5, to=2-5]
+				\arrow[""{name=0, anchor=center, inner sep=0}, "S"', "\shortmid"{marking}, no head, from=2-1, to=2-5]
+				\arrow[""{name=0p, anchor=center, inner sep=0}, phantom, from=2-1, to=2-5, start anchor=center, end anchor=center]
+				\arrow["\alpha"'{pos=0.4}, shorten <=3pt, shorten >=5pt, Rightarrow, from=1-3, to=0p]
+			\end{tikzcd}
+			=% https://q.uiver.app/#q=WzAsMTcsWzQsMCwiWCJdLFswLDIsIkEnIl0sWzgsMiwiQiciXSxbMSwwLCJBIl0sWzMsMCwiXFxjZG90Il0sWzUsMCwiXFxjZG90Il0sWzcsMCwiQiJdLFszLDEsIlxcY2RvdCJdLFs1LDEsIlxcY2RvdCJdLFswLDEsIkEiXSxbOCwxLCJCIl0sWzIsMCwiXFxjZG90...
+			\begin{tikzcd}[ampersand replacement=\&,column sep=small]
+				\& \cat{A} \& \cdot \& \cdot \& \cat{X} \& \cdot \& \cdot \& \cat{B} \\
+				\cat{A} \& \cdot \& \cdot \& \cdot \&\& \cdot \& \cdot \& \cdot \& \cat{B} \\
+				{\cat{A'}} \&\&\&\&\&\&\&\& {\cat{B'}}
+				\arrow["{R_1}", "\shortmid"{marking}, no head, from=1-2, to=1-3]
+				\arrow[equals, from=1-2, to=2-1]
+				\arrow["\cdots"{marking, allow upside down}, draw=none, from=1-3, to=1-4]
+				\arrow[equals, from=1-3, to=2-2]
+				\arrow["{R_n}", "\shortmid"{marking}, no head, from=1-4, to=1-5]
+				\arrow[equals, from=1-4, to=2-3]
+				\arrow["{L_1}", "\shortmid"{marking}, no head, from=1-5, to=1-6]
+				\arrow[equals, from=1-5, to=2-4]
+				\arrow[equals, from=1-5, to=2-6]
+				\arrow["\cdots"{marking, allow upside down}, draw=none, from=1-6, to=1-7]
+				\arrow[equals, from=1-6, to=2-7]
+				\arrow["{L_m}", "\shortmid"{marking}, no head, from=1-7, to=1-8]
+				\arrow[equals, from=1-7, to=2-8]
+				\arrow[equals, from=1-8, to=2-9]
+				\arrow["{R_1}", "\shortmid"{marking}, from=2-1, to=2-2]
+				\arrow["f"', from=2-1, to=3-1]
+				\arrow["\cdots"{marking, allow upside down}, draw=none, from=2-2, to=2-3]
+				\arrow["{R_n}", "\shortmid"{marking}, from=2-3, to=2-4]
+				\arrow[""{name=0, anchor=center, inner sep=0}, "{U_X}"'{pos=0.3}, "\shortmid"{marking}, equals, from=2-4, to=2-6]
+				\arrow[""{name=0p, anchor=center, inner sep=0}, phantom, from=2-4, to=2-6, start anchor=center, end anchor=center]
+				\arrow[""{name=0p, anchor=center, inner sep=0}, phantom, from=2-4, to=2-6, start anchor=center, end anchor=center]
+				\arrow["{L_1}", "\shortmid"{marking}, from=2-6, to=2-7]
+				\arrow["\cdots"{marking, allow upside down}, draw=none, from=2-7, to=2-8]
+				\arrow["{L_m}", "\shortmid"{marking}, from=2-8, to=2-9]
+				\arrow["g", from=2-9, to=3-9]
+				\arrow[""{name=1, anchor=center, inner sep=0}, "S"', "\shortmid"{marking}, no head, from=3-1, to=3-9]
+				\arrow[""{name=1p, anchor=center, inner sep=0}, phantom, from=3-1, to=3-9, start anchor=center, end anchor=center]
+				\arrow[shorten <=3pt, shorten >=5pt, Rightarrow, from=1-5, to=0p]
+				\arrow["{\exists!}"', shorten <=6pt, shorten >=4pt, Rightarrow, from=0p, to=1p]
+			\end{tikzcd}
+		\end{equation}
+	while restrictions are cartesian cells...
+
+	In the setting of categorical logic, having all units means every theory $\cat T$ comes with its own \textbf{entailment relation} ${{\entails_{\cat T}} : \cat T \profequalto \cat T}$, which is thus a special case of semantic relation.
+	Its universal property roughly says that if $\varphi \entails_{\cat T} \psi$ and $\psi \models \chi$, then $\varphi \models \chi$ and dually so.
+
+	Restrictions instead allow to define semantic relations relative to a certain semantic map.
+	Suppose you have maps of theories $f:\cat M \to \cat M'$ and $g:\cat T \to \cat T'$, with a semantic relation ${\models} : \cat M' \to \cat T'$, then we want to be able to restrict such a relation to $f(-) \models g(-) : \cat M \to \cat T$, with the intuitive meaning.
+
+	Specifically, this allows to relate Kripke and Scott semantics to each other.
+	Scott semantics, as noted before, amounts to a map of theories $\sem{-}:\cat T \to \cat M$.
+	We can then define a semantic relation ${- \entails_{\cat M} \sem{-} : \cat T \to \cat M}$ by restricting the entailment relation of $\cat M$ along $\sem{-}$ on the right---this is also called the \textbf{conjoint} of $\sem{-}$.
+	In symbols, we defined a semantic relation $X \models \varphi$ to mean exactly $X \entails_{\cat M} \sem{\varphi}$.
+
+	We can, in fact, formulate various concepts concerning validity and semantic entailment using the language of virtual equipments.
+
+	\begin{definition}[Semantic entailment]
+		Let ${\models}:\cat M \to \cat T$ be a semantic relation in a doctrine $\dblcat D$.
+		\textbf{Semantic entailment} is the codensity monad associated to ${\models}$, i.e. the semantic relation obtained by right Kan extension of ${\models}$ along itself:
+		\begin{equation}
+			% https://q.uiver.app/#q=WzAsNixbMCwwLCJcXGNhdCBNIl0sWzAsMSwiXFxjYXQgTSJdLFsxLDAsIlxcY2F0IFQiXSxbMiwwLCJcXGNhdCBUIl0sWzIsMSwiXFxjYXQgVCJdLFsxLDFdLFsxLDQsIiIsMCx7InN0eWxlIjp7ImJvZHkiOnsibmFtZSI6ImJhcnJlZCJ9LCJoZWFkIjp7Im5hbWUiOiJub25lIn19fV0sWzAsMiwiIiwwLHsic3R5bGUiOnsiYm9keSI6eyJuYW1lIjoiYmFycmVkIn0sImhlYWQiOnsibmFtZSI6Im5vbmUifX19XSxbMiwzLCJcXHNlbWVudGFpbHNfe1xcbW9kZWxzfSA6PSBcXHJhbl97XFxtb2RlbHN9IHtcXG1vZGVsc30iLDAseyJzdHlsZSI6eyJib2R5Ijp7Im5hbWUiOiJiYXJyZWQifSwiaGVhZCI6eyJuYW1lIjoibm9uZSJ9fX1dLFswLDEsIiIsMSx7ImxldmVsIjoyLCJzdHlsZSI6eyJoZWFkIjp7Im5hbWUiOiJub25lIn19fV0sWzMsNCwiIiwxLHsibGV2ZWwiOjIsInN0eWxlIjp7ImhlYWQiOnsibmFtZSI6Im5vbmUifX19XSxbMiw1LCJcXGNhcnQiLDAseyJzaG9ydGVuIjp7InNvdXJjZSI6MTAsInRhcmdldCI6MTB9LCJsZXZlbCI6Mn1dXQ==
+			\begin{tikzcd}[ampersand replacement=\&]
+				{\cat M} \& {\cat T} \& {\cat T} \\
+				{\cat M} \& {} \& {\cat T}
+				\arrow["\shortmid"{marking}, "{\models}", no head, from=1-1, to=1-2]
+				\arrow[equals, from=1-1, to=2-1]
+				\arrow["{\ran_{\models} {\models}}", dashed, "\shortmid"{marking}, no head, from=1-2, to=1-3]
+				\arrow["\cart", shorten <=5pt, shorten >=5pt, Rightarrow, from=1-2, to=2-2]
+				\arrow[equals, from=1-3, to=2-3]
+				\arrow["\shortmid"{marking}, "{\models}"', no head, from=2-1, to=2-3]
+			\end{tikzcd}
+		\end{equation}
+		We denote $\ran_{\models} {\models}$ as $\sementails_{\models}$.
+	\end{definition}
+
+	Indeed, in the equipment of sets and relations such a Kan extension would be:
+	\begin{equation}
+		\varphi \sementails_{\models} \psi\ =\ \forall (X \in \cat M),\ X \models \varphi \implies X \models \psi,
+	\end{equation}
+	which the usual definition of semantic entailment.
+
+	More formally, the universal property of $\sementails_{\models}$ is the following: for any another semantic relation ${\sementails}' : \cat T \profto \cat T$, together with a square $\alpha : {\models}, {\sementails'} \twoto {\models}$, there is a unique map ${\sementails'} \twoto {\sementails_{\models}}$ factoring $\alpha$ through the cartesian square above.
+	Spelled out explicitly, this means that if ${\sementails}'$ is such that $X \models \varphi$ and $\varphi \sementails' \psi$ yields $X \models \psi$, then $\varphi \sementails_{\models} \psi$.
+	By currying we get the above description.
+
+	\begin{definition}[Completeness]
+		A semantic relation ${\models}:\cat M \profto \cat T$ is \textbf{complete} when ${\sementails_{\models}} \iso {\entails_{\cat T}}$, i.e. when ${\models}$ is codense as an arrow.
+	\end{definition}
+
+	This pretty much directly translates the traditional meaning of completeness in Kripke semantics.
+	For Scott semantics, completeness is quite different though: it is the statement that $\sem{-}$ is fully faithful, i.e. that $\varphi \entails_{\cat T} \psi \ \iso\ \sem{\varphi} \entails_{\cat M} \sem{\psi}$.
+
+	We now show how we get this from the above formulation of completeness.
+	Indeed, suppose ${\models} = - \entails_{\cat M} \sem{-}$, we want to show that $\sem{-} \entails_{\cat M} \sem{-}$ is the corresponding semantic entailment---then saying that $\sem{-}$ is fully faithful amounts to saying precisely that $\sem{-} \entails_{\cat M} \sem{-}$ is isomorphic to $\entails_{\cat T}$, and thus that $- \entails_{\cat M} \sem{-}$ is codense.
+
+	The open claim holds in generality:
+
+	\begin{lemma}
+		In a virtual equipment, consider $F:\cat A \to \cat B$.
+		The codensity monad of $\cat B(-, F-)$ is $\cat B(F-,F-)$.
+	\end{lemma}
+	\begin{proof}
+		We start by observing that squares of the form
+		\begin{equation}
+			% https://q.uiver.app/#q=WzAsNixbMCwwLCJcXGNhdCBCIl0sWzAsMSwiXFxjYXQgQiJdLFsxLDAsIlxcY2F0IEEiXSxbMiwwLCJcXGNhdCBBIl0sWzIsMSwiXFxjYXQgQSJdLFsxLDFdLFsxLDQsIkIoLSxGLSkiLDIseyJzdHlsZSI6eyJib2R5Ijp7Im5hbWUiOiJiYXJyZWQifSwiaGVhZCI6eyJuYW1lIjoibm9uZSJ9fX1dLFswLDIsIkIoLSxGLSkiLDAseyJzdHlsZSI6eyJib2R5Ijp7Im5hbWUiOiJiYXJyZWQifSwiaGVhZCI6eyJuYW1lIjoibm9uZSJ9fX1dLFsyLDMsIiIsMCx7InN0eWxlIjp7ImJvZHkiOnsibmFtZSI6ImJhcnJlZCJ9LCJoZWFkIjp7Im5hbWUiOiJub25lIn19fV0sWzAsMSwiIiwxLHsibGV2ZWwiOjIsInN0eWxlIjp7ImhlYWQiOnsibmFtZSI6Im5vbmUifX19XSxbMyw0LCIiLDEseyJsZXZlbCI6Miwic3R5bGUiOnsiaGVhZCI6eyJuYW1lIjoibm9uZSJ9fX1dLFsyLDUsIiIsMCx7InNob3J0ZW4iOnsic291cmNlIjoyMCwidGFyZ2V0IjozMH0sImxldmVsIjoyfV1d
+			\begin{tikzcd}[ampersand replacement=\&]
+				{\cat B} \& {\cat A} \& {\cat A} \\
+				{\cat B} \& {} \& {\cat A}
+				\arrow["{B(-,F-)}", "\shortmid"{marking}, no head, from=1-1, to=1-2]
+				\arrow[equals, from=1-1, to=2-1]
+				\arrow["\shortmid"{marking}, no head, from=1-2, to=1-3]
+				\arrow[shorten <=2pt, shorten >=3pt, Rightarrow, from=1-2, to=2-2]
+				\arrow[equals, from=1-3, to=2-3]
+				\arrow["{B(-,F-)}"', "\shortmid"{marking}, no head, from=2-1, to=2-3]
+			\end{tikzcd}
+		\end{equation}
+		are in bijection with squares of the form
+		\begin{equation}% https://q.uiver.app/#q=WzAsNSxbMCwwLCJcXGNhdCBCIl0sWzEsMCwiXFxjYXQgQSJdLFsyLDAsIlxcY2F0IEEiXSxbMiwxLCJcXGNhdCBCIl0sWzAsMSwiXFxjYXQgQiJdLFswLDEsIkIoLSxGLSkiLDAseyJzdHlsZSI6eyJib2R5Ijp7Im5hbWUiOiJiYXJyZWQifSwiaGVhZCI6eyJuYW1lIjoibm9uZSJ9fX1dLFsxLDIsIiIsMCx7InN0eWxlIjp7ImJvZHkiOnsibmFtZSI6ImJhcnJlZCJ9LCJoZWFkIjp7Im5hbWUiOiJub25lIn19fV0sWzQsMywiIiwxLHsibGV2ZWwiOjIsInN0eWxlIjp7ImJvZHkiOnsibmFtZSI6ImJhcnJlZCJ9LCJoZWFkIjp7Im5hbWUiOiJub25lIn19fV0sWzAsNCwiIiwxLHsibGV2ZWwiOjIsInN0eWxlIjp7ImhlYWQiOnsibmFtZSI6Im5vbmUifX19XSxbMiwzLCJGIl0sWzEsNywiXFxjYXJ0IiwwLHsibGFiZWxfcG9zaXRpb24iOjQwLCJzaG9ydGVuIjp7InNvdXJjZSI6MjAsInRhcmdldCI6NDB9LCJlZGdlX2FsaWdubWVudCI6eyJ0YXJnZXQiOmZhbHNlfX1dXQ==
+			\begin{tikzcd}[ampersand replacement=\&]
+				{\cat B} \& {\cat A} \& {\cat A} \\
+				{\cat B} \&\& {\cat B}
+				\arrow["{B(-,F-)}", "\shortmid"{marking}, no head, from=1-1, to=1-2]
+				\arrow[equals, from=1-1, to=2-1]
+				\arrow["\shortmid"{marking}, no head, from=1-2, to=1-3]
+				\arrow["F", from=1-3, to=2-3]
+				\arrow[""{name=0, anchor=center, inner sep=0}, "\shortmid"{marking}, equals, from=2-1, to=2-3]
+				\arrow[""{name=0p, anchor=center, inner sep=0}, phantom, from=2-1, to=2-3, start anchor=center, end anchor=center]
+				\arrow[shorten <=3pt, shorten >=6pt, Rightarrow, from=1-2, to=0p]
+			\end{tikzcd}
+		\end{equation}
+		because of the unique factorization property of the cartesian square defining the restriction $B(-, F-)$:
+		\begin{equation}
+			% https://q.uiver.app/#q=WzAsOCxbMCwwLCJcXGNhdCBCIl0sWzAsMSwiXFxjYXQgQiJdLFsxLDAsIlxcY2F0IEEiXSxbMiwwLCJcXGNhdCBBIl0sWzIsMSwiXFxjYXQgQSJdLFsxLDFdLFsyLDIsIlxcY2F0IEIiXSxbMCwyLCJcXGNhdCBCIl0sWzEsNCwiQigtLEYtKSIsMSx7InN0eWxlIjp7ImJvZHkiOnsibmFtZSI6ImJhcnJlZCJ9LCJoZWFkIjp7Im5hbWUiOiJub25lIn19fV0sWzAsMiwiQigtLEYtKSIsMCx7InN0eWxlIjp7ImJvZHkiOnsibmFtZSI6ImJhcnJlZCJ9LCJoZWFkIjp7Im5hbWUiOiJub25lIn19fV0sWzIsMywiIiwwLHsic3R5bGUiOnsiYm9keSI6eyJuYW1lIjoiYmFycmVkIn0sImhlYWQiOnsibmFtZSI6Im5vbmUifX19XSxbMCwxLCIiLDEseyJsZXZlbCI6Miwic3R5bGUiOnsiaGVhZCI6eyJuYW1lIjoibm9uZSJ9fX1dLFszLDQsIiIsMSx7ImxldmVsIjoyLCJzdHlsZSI6eyJoZWFkIjp7Im5hbWUiOiJub25lIn19fV0sWzIsNSwiIiwwLHsibGFiZWxfcG9zaXRpb24iOjQwLCJzaG9ydGVuIjp7InNvdXJjZSI6MjAsInRhcmdldCI6NDB9LCJsZXZlbCI6Mn1dLFs0LDYsIkYiXSxbMSw3LCIiLDAseyJsZXZlbCI6Miwic3R5bGUiOnsiaGVhZCI6eyJuYW1lIjoibm9uZSJ9fX1dLFs3LDYsIiIsMSx7ImxldmVsIjoyLCJzdHlsZSI6eyJib2R5Ijp7Im5hbWUiOiJiYXJyZWQifSwiaGVhZCI6eyJuYW1lIjoibm9uZSJ9fX1dLFs4LDE2LCJcXGNhcnQiLDAseyJzaG9ydGVuIjp7InNvdXJjZSI6MzAsInRhcmdldCI6MzB9LCJlZGdlX2FsaWdubWVudCI6eyJzb3VyY2UiOmZhbHNlLCJ0YXJnZXQiOmZhbHNlfX1dXQ==
+			\begin{tikzcd}[ampersand replacement=\&]
+				{\cat B} \& {\cat A} \& {\cat A} \\
+				{\cat B} \& {} \& {\cat A} \\
+				{\cat B} \&\& {\cat B}
+				\arrow["{B(-,F-)}", "\shortmid"{marking}, no head, from=1-1, to=1-2]
+				\arrow[equals, from=1-1, to=2-1]
+				\arrow["\shortmid"{marking}, no head, from=1-2, to=1-3]
+				\arrow[shorten <=2pt, shorten >=4pt, Rightarrow, from=1-2, to=2-2]
+				\arrow[equals, from=1-3, to=2-3]
+				\arrow[""{name=0, anchor=center, inner sep=0}, "{B(-,F-)}"{description}, "\shortmid"{marking}, no head, from=2-1, to=2-3]
+				\arrow[""{name=0p, anchor=center, inner sep=0}, phantom, from=2-1, to=2-3, start anchor=center, end anchor=center]
+				\arrow[equals, from=2-1, to=3-1]
+				\arrow["F", from=2-3, to=3-3]
+				\arrow[""{name=1, anchor=center, inner sep=0}, "\shortmid"{marking}, equals, from=3-1, to=3-3]
+				\arrow[""{name=1p, anchor=center, inner sep=0}, phantom, from=3-1, to=3-3, start anchor=center, end anchor=center]
+				\arrow["\cart", shorten <=6pt, shorten >=6pt, Rightarrow, from=0p, to=1p]
+			\end{tikzcd}
+		\end{equation}
+
+		So to prove the lemma it suffices to define a cartesian square of the latter form.
+		We define it as the following composite:
+		\begin{equation}
+			% https://q.uiver.app/#q=WzAsOSxbMCwwLCJcXGNhdCBCIl0sWzEsMCwiXFxjYXQgQSJdLFsyLDAsIlxcY2F0IEEiXSxbMiwxLCJcXGNhdCBCIl0sWzAsMSwiXFxjYXQgQiJdLFsxLDEsIlxcY2F0IEIiXSxbMCwyLCJcXGNhdCBCIl0sWzIsMiwiXFxjYXQgQiJdLFsxLDJdLFswLDEsIkIoLSxGLSkiLDAseyJzdHlsZSI6eyJib2R5Ijp7Im5hbWUiOiJiYXJyZWQifSwiaGVhZCI6eyJuYW1lIjoibm9uZSJ9fX1dLFsxLDIsIkIoRi0sRi0pIiwwLHsic3R5bGUiOnsiYm9keSI6eyJuYW1lIjoiYmFycmVkIn0sImhlYWQiOnsibmFtZSI6Im5vbmUifX19XSxbMCw0LCIiLDEseyJsZXZlbCI6Miwic3R5bGUiOnsiaGVhZCI6eyJuYW1lIjoibm9uZSJ9fX1dLFsyLDMsIkYiXSxbNCw1LCIiLDEseyJsZXZlbCI6Miwic3R5bGUiOnsiYm9keSI6eyJuYW1lIjoiYmFycmVkIn0sImhlYWQiOnsibmFtZSI6Im5vbmUifX19XSxbNSwzLCIiLDAseyJsZXZlbCI6Miwic3R5bGUiOnsiYm9keSI6eyJuYW1lIjoiYmFycmVkIn0sImhlYWQiOnsibmFtZSI6Im5vbmUifX19XSxbMSw1LCIiLDAseyJsZXZlbCI6Miwic3R5bGUiOnsiaGVhZCI6eyJuYW1lIjoibm9uZSJ9fX1dLFs0LDYsIiIsMSx7ImxldmVsIjoyLCJzdHlsZSI6eyJoZWFkIjp7Im5hbWUiOiJub25lIn19fV0sWzYsNywiIiwxLHsibGV2ZWwiOjIsInN0eWxlIjp7ImJvZHkiOnsibmFtZSI6ImJhcnJlZCJ9LCJoZWFkIjp7Im5hbWUiOiJub25lIn19fV0sWzMsNywiIiwxLHsibGV2ZWwiOjIsInN0eWxlIjp7ImhlYWQiOnsibmFtZSI6Im5vbmUifX19XSxbNSw4LCJcXGNhcnQiLDAseyJsYWJlbF9wb3NpdGlvbiI6NDAsInNob3J0ZW4iOnsic291cmNlIjozMCwidGFyZ2V0IjozMH0sImxldmVsIjoyfV0sWzksMTMsIlxcY2FydCIsMCx7ImxhYmVsX3Bvc2l0aW9uIjo0MCwic2hvcnRlbiI6eyJzb3VyY2UiOjMwLCJ0YXJnZXQiOjMwfSwiZWRnZV9hbGlnbm1lbnQiOnsidGFyZ2V0IjpmYWxzZX19XSxbMTAsMTQsIlxcY2FydCIsMCx7ImxhYmVsX3Bvc2l0aW9uIjo0MCwic2hvcnRlbiI6eyJzb3VyY2UiOjMwLCJ0YXJnZXQiOjMwfX1dXQ==
+			\begin{tikzcd}[ampersand replacement=\&]
+				{\cat B} \& {\cat A} \& {\cat A} \\
+				{\cat B} \& {\cat B} \& {\cat B} \\
+				{\cat B} \& {} \& {\cat B}
+				\arrow[""{name=0, anchor=center, inner sep=0}, "{B(-,F-)}", "\shortmid"{marking}, no head, from=1-1, to=1-2]
+				\arrow[equals, from=1-1, to=2-1]
+				\arrow[""{name=1, anchor=center, inner sep=0}, "{B(F-,F-)}", "\shortmid"{marking}, no head, from=1-2, to=1-3]
+				\arrow[equals, from=1-2, to=2-2]
+				\arrow["F", from=1-3, to=2-3]
+				\arrow[""{name=2, anchor=center, inner sep=0}, "\shortmid"{marking}, equals, from=2-1, to=2-2]
+				\arrow[""{name=2p, anchor=center, inner sep=0}, phantom, from=2-1, to=2-2, start anchor=center, end anchor=center]
+				\arrow[equals, from=2-1, to=3-1]
+				\arrow[""{name=3, anchor=center, inner sep=0}, "\shortmid"{marking}, equals, from=2-2, to=2-3]
+				\arrow["\cart"{pos=0.4}, shorten <=3pt, shorten >=3pt, Rightarrow, from=2-2, to=3-2]
+				\arrow[equals, from=2-3, to=3-3]
+				\arrow["\shortmid"{marking}, equals, from=3-1, to=3-3]
+				\arrow["\cart"{pos=0.4}, shorten <=6pt, shorten >=6pt, Rightarrow, from=0, to=2p]
+				\arrow["\cart"{pos=0.4}, shorten <=6pt, shorten >=6pt, Rightarrow, from=1, to=3]
+			\end{tikzcd}
+		\end{equation}
+		The cartesianness of its factors implies the cartesianness of the result.
+	\end{proof}
+
+	\subsection{DCST}
+	The point of view of Double Categorical Systems Theory (DCST) is that a `theory of systems' is mathematically embodied as a \emph{double algebra of double operad}, or, equivalently, a \emph{module over a symmetric monoidal category}.
+	The categorical dimension takes care of all the \emph{morphological} aspects of the theory, while the higher algebraic structure provides \emph{composition}.
+	\begin{equation}
+		% https://q.uiver.app/#q=WzAsNCxbMCwwLCJcXGNkb3QiXSxbMCwxLCJcXGNkb3QiXSxbMSwxLCJcXGNkb3QiXSxbMSwwLCJcXGNkb3QiXSxbMCwzXSxbMSwyXSxbMCwxLCIiLDEseyJzdHlsZSI6eyJib2R5Ijp7Im5hbWUiOiJiYXJyZWQifX19XSxbMywyLCIiLDEseyJzdHlsZSI6eyJib2R5Ijp7Im5hbWUiOiJiYXJyZWQifX19XSxbNiw3LCIiLDEseyJzaG9ydGVuIjp7InNvdXJjZSI6MjAsInRhcmdldCI6MjB9LCJlZGdlX2FsaWdubWVudCI6eyJzb3VyY2UiOmZhbHNlLCJ0YXJnZXQiOmZhbHNlfX1dXQ==
+		\begin{tikzcd}[ampersand replacement=\&]
+			\cdot \& \cdot \\
+			\cdot \& \cdot
+			\arrow[from=1-1, to=1-2]
+			\arrow[""{name=0, anchor=center, inner sep=0}, "\loosemarking"{marking}, from=1-1, to=2-1]
+			\arrow[""{name=0p, anchor=center, inner sep=0}, phantom, from=1-1, to=2-1, start anchor=center, end anchor=center]
+			\arrow[""{name=1, anchor=center, inner sep=0}, "\loosemarking"{marking}, from=1-2, to=2-2]
+			\arrow[""{name=1p, anchor=center, inner sep=0}, phantom, from=1-2, to=2-2, start anchor=center, end anchor=center]
+			\arrow[from=2-1, to=2-2]
+			\arrow[shorten <=6pt, shorten >=6pt, Rightarrow, from=0p, to=1p]
+		\end{tikzcd}
+	\end{equation}
+	A theory of systems, being a module, substantiates the formal composition operations of a composition theory, i.e.~provides concrete stuff for the compositions to compose.
+
+	A great deal of logic for systems (chiefly, automata of various kinds), is built to be compositional, which means that the structure of the formulae is adapted to the compositional structure of the systems these are used to predicate about.
+	This means such logic is itself a module over a composition theory.
+	Unlike systems, however, logics are \emph{left} modules.
+	The easiest way to understand this is through the fundamental definition of logical satisfaction for compositional logic:
+	\begin{equation}
+		\sys S \models p \cdot \varphi \sse \sys S \cdot p \models \varphi
+	\end{equation}
+	Thus the action of a composition theory on formulae provides (dependently graded) modalities which allow to predicate on the validity of a statement after some processes are executed.
+	Of course we have
+	\begin{equation}
+		p \cdot (q \cdot \varphi) \dashv\vdash (p \then q) \cdot \varphi, \qquad \lid \cdot \varphi \dashv\vdash \varphi
+	\end{equation}
+	Moreover formulae have a prescribed logical structure, meaning they form algebra of some kind living in a 2-category $\dblcat{Alg}$.
+	The operations $p\cdot-$ are thus assumed to be maps (1-cells) in such a 2-category meaning they commute (possibly only co/laxly) with the operations $\star$ recognized by such maps:
+	\begin{equation}
+		p \cdot (\varphi \star \psi) \dashv\vdash (p \cdot \varphi) \star (p \cdot \psi)
+	\end{equation}
+
+	\section{Exogenous logic}
+	\subsection{Comparison with (P)DL}
+	We refer to \cite{harelDynamicLogic2000}, specifically §5.
+	PDL is a (usually classical) propositional logic constructed from a language of programs.
+	Aside from standard logical connectives ($\bot$, $\to$,$\land$, etc.), its syntax  is given by modalities $[p]$ populated by programs.
+	In their simplest form, programs are assumed to be composed from atomic programs $a,b,\ldots$ and their sequential compositions $\then$.
+	Then axioms are imposed:
+	\begin{equation}
+		[p \then q] \varphi \dashv\vdash [p][q] \varphi, \qquad [p](\varphi \star \psi) \dashv\vdash [p]\varphi \land [p]\psi
+	\end{equation}
+	where $\star$ is either $\land$ or $\to$ (but not $\lor$).
+	It's easy to see these axioms make $[-]$ into a left action of programs on formulae, given by maps of algebras of formulae of the kind that commute with $\land$ and $\to$ but only colaxly commute with $\lor$ (see \cite[Theorem~5.6]{harelDynamicLogic2000}).
+
+	Other operators on programs are more or less hard to reproduce in our framework:
+	\begin{enumerate}
+		\item Non-deterministic choice $\oplus$ and concurrent execution $\otimes$ correspond to extra monoidal structures on the composition theory of programs,
+		\item Iteration $p^*$ (meaning, roughly, $\bigoplus_{n \geq 0} p^{\then n}$) is the free monad construction in the composition theory of programs.
+		\item Test is quite weird: $\varphi?$ is a program that fails if $\varphi$ is false and continues otherwise.
+		Its semantics is pretty tame, in fact it corresponds to an interpretation of formulae as programs: $[\varphi?]\psi \dashv\vdash \varphi \to \psi$.
+		In fact we can use this equivalence to brush it off as a shorthand for implication.
+	\end{enumerate}
+
+	The semantics of this logic takes place in a Kripke frame $(S, \sem{-})$ where $S$ is a set and $\sem{-}$ a loosely-defined `meaning function' which denotes interpretation of both formulae and programs.
+	Specifically, for a formula $\varphi$ it yields a subset $\sem{\varphi} \subseteq S$ and for a program $p$ a relation $\sem{p} : S \profto S$.
+	The semantics of an atomic program $i \in I$ is given, and thus gives $S$ the structure of an NFA.
+	Then one extends it with the operators on programs:
+	\begin{equation}
+		\sem{p \then q} = \sem{p} \odot \sem{q}, \qquad \sem{p \oplus q} = \sem{p} \cup \sem{q}, \qquad \sem{\langle p \rangle \varphi} = \sem{p} \odot \sem{\varphi}
+	\end{equation}
+	where in the latter we interpret $\sem{\varphi}$ as a relation $S \profto 1$.
+
+	\subsection{Hennessy--Milner `endogenous' logic vs dynamic logic.}
+	The syntax and semantics of Hennessy--Milner logic and dynamic logic look very very similar.
+
+	Let's review Hennessy--Milner logic for NFAs with alphabet $I$, as first described in \cite{hennessyObservingNondeterminismConcurrency1980}.
+	Hennessy and Milner start by defining a labelled transition system $(S, \leadsto)$ and a sequence of equivalence relations
+	\begin{equation}
+		s \sim_{n+1} q \iff \begin{gathered}
+			\forall i \in I,\ s \leadsto_i s' \to \exists t'\ t \leadsto_i t' \ \land \ t' \sim_n t'\\
+			\forall i \in I,\ s' \leadsto_i s \to \exists t'\ t' \leadsto_i t \ \land \ t' \sim_n t'
+		\end{gathered}
+	\end{equation}
+	where $\sim_0$ is the terminal relation.
+	Then define \emph{observational equivalence} as
+	\begin{equation}
+		\forall n \in \N, p \sim_n q.
+	\end{equation}
+	Importantly, Hennessy and Milner define a concept of \emph{experiment}, which is used to define the above, this being (mathematically) just given by a word $w \in I^*$.
+	Observational equivalence above can thus be described as a relation `closed under experiments': if $s \sim t$ and we run an experiment on $s$ changing it to $s'$, then the same experiment will change $t$ to $t' \sim p$.%\footnote{Notice this means that, in fact, an experiment is just a word $w \in I^*$, and not a sequence of states or it wouldn't make sense to perform on $q$ the same experiment as $p$.}
+
+	The Hennessy--Milner logic associated to this situation is then given by formulae $\varphi := \top/\bot \mid \varphi \land/\lor/\to \varphi \mid \square_i/\lozenge_i \varphi$ where the latter modalities range over $i \in I$ of course.
+	Call $L$ the set of such formulae.
+
+	We have then a relation $\models : S \to L$ defined in Tarskian fashion for the usual connectives and for the modalities
+	\begin{eqalign}
+		s \models \lozenge_i \varphi &\sse \exists s \leadsto_i s',\ s' \models \varphi,\\
+		s \models \square_i \varphi &\sse \forall s \leadsto_i s',\ s' \models \varphi.
+	\end{eqalign}
+
+	\section{Endogenous logic}
+	\subsection{Time}
+	Consider the tight datum $D:\Sys \to \Comp$ of a theory of systems, and recall there is a double category whose objects are pairs $(A \in \Comp, \sys S \in \Sys(A))$, denoted as $\lens{\sys S}{A}$, whose tight 1-cells are maps of systems and interfaces, and whose loose 1-cells $\lens{\sys S}{A} \to \lens{\sys T}{B}$ are compositions $p:A \to B$ such that $\sys S\cdot p = \sys T$.
+
+	We denote this double category as $\dblSys$.
+	We make good use of the tight part of this double category.
+	In there, we can define universal constructions of systems.
+
+	\begin{definition}
+		A \textbf{diagram of systems} is a category $\cat J$ together with a functor $\sys D : \cat J \to \dblSys$ picking out a system $\sys D_j$ with interface $I_j$ for each $j \in \cat J$ and a map of systems $\sys D_f : \sys D_j \to \sys D_i$ over the map of interfaces $I_j \to I_i$ for each 1-cell $f:j \to i \in \cat J$.
+	\end{definition}
+
+	\begin{definition}
+		The \textbf{limit} (resp. \textbf{colimit}) of a diagram of systems is the categorical limit (resp. colimit) of the diagram in the tight category of $\dblSys$.
+	\end{definition}
+
+
+	\begin{remark}
+		A category like $\cat J$ can be turned into a double category by equipping it with trivial loose moprhisms only, and then into a trivial theory of systems by assigning to each $j \in \cat J$ the terminal category $1$.
+		Then a diagram $\sys D : \cat J \to \Sys$ is a (necessarily taut) map of theories.
+	\end{remark}
+
+	The following generalizes corepresentable behaviour:
+	% \begin{proposition}
+	% 	For each system $\sys T \in \Sys$ with interface $I \in \Comp$, there is a \textbf{corepresentable behaviour} $\Sys(\sys T, -) : \Sys \to \Set$ given on each $A \in \Comp$ by the functor
+	% 	\begin{equation}
+	% 		\Sys(\sys T, -) : \Sys(A) \longto \Set/\Comp(I,A)
+	% 	\end{equation}
+	% 	defined as $\Sys(\sys T, \sys X) = \sum_{h \in \Comp(I,A)} \Sys(h)(\sys T, \sys X) \nto{\fst} \Comp(I,A)$.
+	% \end{proposition}
+
+	\begin{proposition}
+		For each diagram of systems $\sys T : \Time \to \Sys$, there is a \textbf{jointly corepresentable behaviour} $\Sys(\sys T, -)$ given on each $A \in \Comp$ by the functor
+		\begin{equation}
+			\Sys(\sys T, -) : \Sys(A) \longto \Set/\colim_{t \in \Time}\Comp(I_t,A)
+		\end{equation}
+		defined as $\Sys(\sys T, \sys X) = \colim_{t \in \Time} \left(\sum_{h \in \Comp(I_t,A)} \Sys(h)(\sys T_t, \sys X) \nto{\fst} \Comp(I_t,A)\right)$.
+	\end{proposition}
+
+	The idea here is to embody a topology of time in a category and specifically in the functor picking out `walking trajectories' $\sys T_t$ for every `shape of time', or \textbf{timepiece}\footnote{A middle-ground position between calling them \textbf{clocks} and just \textbf{times}.}, $t$.
+	This allows to be very flexible and precise in our meaning of time.
+	For instance, here's three different ways to talk about trajectories of Moore machines:
+
+	\begin{example}
+	\label{ex:non-det-moore-with-strictly-increasing-finite-trajs}
+		Consider the theory $\Moore_P$ of non-deterministic Moore machines in $\Set$.
+		Let $\Time = (\N, \leq)$ and define $\sys T:\Time \to \Moore_P$ as follows.
+		The non-deterministic Moore machine $\sys T_n$ has interface\footnotemark~$\lens{1}{n}$ and dynamics representable as follows:
+		\footnotetext{We abuse notation by denoting with $n$ also the finite set $\{1, \ldots, n\} \subseteq \N$}
+		\begin{equation}
+			% https://q.uiver.app/#q=WzAsNCxbMCwwLCJcXE92ZXJzZXR7MX1cXGJ1bGxldCJdLFsxLDAsIlxcT3ZlcnNldHsyfVxcYnVsbGV0Il0sWzIsMCwiXFxjZG90cyJdLFszLDAsIlxcT3ZlcnNldHtufVxcYnVsbGV0Il0sWzAsMV0sWzEsMl0sWzIsM11d
+			\begin{tikzcd}[ampersand replacement=\&]
+				{\Overset{1}\bullet} \& {\Overset{2}\bullet} \& \cdots \& {\Overset{n}\bullet}
+				\arrow[from=1-1, to=1-2]
+				\arrow[from=1-2, to=1-3]
+				\arrow[from=1-3, to=1-4]
+			\end{tikzcd}
+		\end{equation}
+		An inequality $n \leq m$ is then mapped to the map of systems $\sys T_n \to \sys T_m$ that maps the states of the first to the first $n$ states of the latter.
+	\end{example}
+
+	\begin{example}
+	\label{ex:non-det-moore-with-finite-trajs}
+		Instead of $(\N,\leq)$ let $\Time$ be the category whose objects are still $\N$ but whose morphisms $n \to m$ ($n \leq m$) are given by choices of an offset $h \in \N$ such that $h+n \leq m$.
+		The diagram $\sys T$ is defined as before on object, but now a map $h:n \to m$ is sent to the function sending $i \in n$ to $i+h \in m$.
+	\end{example}
+
+	\begin{example}
+	\label{ex:non-det-moore-with-infinite-traj}
+		Consider $B\N$, the one-object category corresponding to the monoid $(\N,0,+)$.
+		We can send the only object $\ast \in B\N$ to the Moore machine with states $\N$ and interface $\lens{1}{\N}$, with dynamics given by shift:
+		\begin{equation}
+			% https://q.uiver.app/#q=WzAsNSxbMCwwLCJcXE92ZXJzZXR7MX1cXGJ1bGxldCJdLFsxLDAsIlxcT3ZlcnNldHsyfVxcYnVsbGV0Il0sWzIsMCwiXFxjZG90cyJdLFszLDAsIlxcT3ZlcnNldHtufVxcYnVsbGV0Il0sWzQsMCwiXFxjZG90cyJdLFswLDFdLFsxLDJdLFsyLDNdLFszLDRdXQ==
+			\begin{tikzcd}[ampersand replacement=\&]
+				{\Overset{1}\bullet} \& {\Overset{2}\bullet} \& \cdots \& {\Overset{n}\bullet} \& \cdots
+				\arrow[from=1-1, to=1-2]
+				\arrow[from=1-2, to=1-3]
+				\arrow[from=1-3, to=1-4]
+				\arrow[from=1-4, to=1-5]
+			\end{tikzcd}
+		\end{equation}
+		On morphisms, the functor is determined by its action on $1:\ast \to \ast$, which is mapped to the endomorphism $\sys T_\ast \to \sys T_\ast$ given on states by $n \mapsto n+1$.
+	\end{example}
+
+	\begin{example}
+	\label{ex:ode-with-finite-length-intervals}
+		Let $\ODE$ be the theory of differential Moore machines.
+		Consider the category of open intervals of the order $(\R,\leq)$, with morphisms given by length-preserving inclusions.
+		Explicitly, a map $(a,b) \to (c,d)$ is a real number $h$ such that $c \leq a+h \leq b+h \leq d$.
+		An interval $(a,b)$ can be mapped to the open ODE whose dynamics is $d/dt = 1$ and interface $\lens{1}{(a,b)}$.
+		This assignment extends to morphisms since length-preserving maps preserve such constant vector fields.
+	\end{example}
+
+	\begin{example}
+	\label{ex:ode-with-alternatives}
+		Similarly as above, we can instead consider two other notions of time for $\ODE$: restrict ourselves to the intervals $(0,b)$ and their inclusions $(0,b) \to (0,d)$, or considering the monoid $B(\R, 0, +)$ mapped to the real line with $d/dt=1$ as dynamics, and sending $\ell:\ast \to \ast$ to the shift map $\_+\ell:\R \to \R$.
+	\end{example}
+
+	\begin{example}
+	\label{ex:petri-with-dags}
+		Let $\Petri$ be the theory of Petri nets, following~\cite{kock_whole-grain_2022}.
+		As shown in \emph{ibid.}, the category of DAGs and morphisms between them embeds in the category of Petri nets: given a DAG, make its edges places and its nodes transitions.
+	\end{example}
+
+	% \begin{example}
+	% 	Consider the theory $\Coalg$ of polynomial coalgebras over $\Poly(\Set)$~\cite{niu_polynomial_2023}.
+	% 	We consider the category whose objects are
+	% \end{example}
+
+	\begin{proposition}
+		Every jointly corepresentable behaviour factors as
+		\begin{equation}
+			\begin{tikzcd}[ampersand replacement=\&]
+				\Sys \&\& \Set \\
+				\& {\Psh(\Time)}
+				\arrow["{\Sys(\sys T,-)}", from=1-1, to=1-3]
+				\arrow["{\Sys(\sys T_{(-)},-)}"', dashed, from=1-1, to=2-2]
+				\arrow["\colim_{t \in \Time}"', from=2-2, to=1-3]
+			\end{tikzcd}
+		\end{equation}
+	\end{proposition}
+	\begin{proof}
+		Explicitly, the map $\Sys(\sys T_{(-)},-)$ is defined on a system $\sys X$ as
+		\begin{eqalign}
+			\Sys(\sys T_{(-)},\sys X) : \Time &\longto \Set\\
+			t &\mapsto \Sys(\sys T_t,\sys X),
+		\end{eqalign}
+		making the claimed commutativity evident.
+		% To see that $\Sys(\sys T_{(-)},\sys X)$ is indeed a sheaf over $\Time^\op$, recall that a sheaf on such a site is a copresheaf $P:\Time \to \Set$ such that, for every limiting cone $\{\bar t \to t_i\}_{i \in I}$ in $\Time$, $\lim_i P(t_i) \iso P(\lim_i t_i) \iso P(\bar t)$.
+		% Then observe that $\lim_i \Sys(\sys T_i,\sys X) \iso \Sys(\colim_i \sys T_{t_i}, \sys X) = \Sys(\sys T_{\bar t},\sys X)$.
+	\end{proof}
+
+	\subsubsection{Locality}
+	Having timepiece systems is helpful to apply all sorts of categorical ideas which regard a class of morphisms.
+	In this section, we consider the image of a diagram of timepieces $\sys T:\Time \to \Sys$, and specifically the maps in such image (maps of timepieces).
+	We denote timepieces in this sense as $\sys s, \sys t, \ldots$ and their maps simply as maps of systems.
+
+	\begin{definition}
+		Consider a system $\sys X$ and the maps
+		\begin{equation}
+			\Sys(\psi, \sys X) : \Sys(\sys t, \sys X) \to \Sys(\sys s, \sys X)
+		\end{equation}
+		induced by each map of timepieces ${\psi : \sys s \to \sys t}$.
+		We say $\sys X$ is
+		\begin{enumerate}
+			\item \textbf{$\sys T$-complete} if all the maps $\Sys(\psi, \sys X)$ are surjective,
+			\item \textbf{$\sys T$-deterministic} if they are injective.
+		\end{enumerate}
+		A complete and deterministic $\sys X$ is called \textbf{completely $\sys T$-deterministic}, or more mundanely, \textbf{$\sys T$-local} \cite[Definition 3.1]{lawsonIntroductionBousfieldLocalization2020}.
+	\end{definition}
+
+	Let's unpack what this means.
+	A $\sys T$-complete system is such that every map $\sys s \to \sys X$, i.e. a trajectory of shape $\sys s$, can be extended along an arbitrary map $\psi: \sys s \to \sys t$:
+	\begin{equation}
+	\label{diag:lifting-problem-1}
+		% https://q.uiver.app/#q=WzAsMyxbMCwwLCJcXHN5cyBzIl0sWzEsMCwiXFxzeXMgWCJdLFswLDEsIlxcc3lzIHQiXSxbMCwyLCJcXGZvcmFsbCBcXHBzaSIsMl0sWzAsMV0sWzIsMSwiXFxleGlzdHMiLDIseyJzdHlsZSI6eyJib2R5Ijp7Im5hbWUiOiJkYXNoZWQifX19XV0=
+		\begin{tikzcd}[ampersand replacement=\&]
+			{\sys s} \& {\sys X} \\
+			{\sys t}
+			\arrow[from=1-1, to=1-2]
+			\arrow["{\forall \psi}"', from=1-1, to=2-1]
+			\arrow["\exists"', dashed, from=2-1, to=1-2]
+		\end{tikzcd}
+	\end{equation}
+	Conversely, $\sys T$-deterministic system is such that if two such extensions exist, then they must necessary be equal:
+	\begin{equation}
+		% https://q.uiver.app/#q=WzAsMyxbMCwwLCJcXHN5cyBzIl0sWzEsMCwiXFxzeXMgWCJdLFswLDEsIlxcc3lzIHQiXSxbMCwyLCJcXGZvcmFsbCBcXHBzaSIsMl0sWzAsMV0sWzIsMSwiIiwyLHsiY3VydmUiOjF9XSxbMiwxLCIiLDEseyJjdXJ2ZSI6LTF9XSxbNiw1LCI9IiwzLHsic2hvcnRlbiI6eyJzb3VyY2UiOjIwLCJ0YXJnZXQiOjIwfSwiZWRnZV9hbGlnbm1lbnQiOnsic291cmNlIjpmYWxzZSwidGFyZ2V0IjpmYWxzZX0sInN0eWxlIjp7ImJvZHkiOnsibmFtZSI6Im5vbmUifSwiaGVhZCI6eyJuYW1lIjoibm9uZSJ9fX1dXQ==
+		\begin{tikzcd}[ampersand replacement=\&]
+			{\sys s} \& {\sys X} \\
+			{\sys t}
+			\arrow[from=1-1, to=1-2]
+			\arrow["{\forall \psi}"', from=1-1, to=2-1]
+			\arrow[""{name=0, anchor=center, inner sep=0}, curve={height=6pt}, from=2-1, to=1-2]
+			\arrow[""{name=0p, anchor=center, inner sep=0}, phantom, from=2-1, to=1-2, start anchor=center, end anchor=center, curve={height=6pt}]
+			\arrow[""{name=1, anchor=center, inner sep=0}, curve={height=-6pt}, from=2-1, to=1-2]
+			\arrow[""{name=1p, anchor=center, inner sep=0}, phantom, from=2-1, to=1-2, start anchor=center, end anchor=center, curve={height=-6pt}]
+			\arrow["{=}"{marking, allow upside down}, draw=none, from=1p, to=0p]
+		\end{tikzcd}
+	\end{equation}
+	Thus a completely $\sys T$-deterministic system is one such that (a) every trajectory can be extended arbitrarily and (b) every such extension is unique.
+
+	\begin{example}
+		Consider non-deterministic Moore machines with timepieces as in \cref{ex:non-det-moore-with-strictly-increasing-finite-trajs}.
+		Note, first, the map of timepieces ${\epsilon_0 : \{\bullet\} \longto \{0 \to 1\}}$ is enough to detect completeness and determinism already.
+		This descends from two facts.
+		First, all maps as described in \cref{ex:non-det-moore-with-strictly-increasing-finite-trajs} are clearly either of the form $\epsilon_0 + k$, or compositions thereof.
+		Second, if $\sys X$ is local with respect to $\psi$ and $\psi'$, it must be local with respect to $\psi + \psi'$ since $\Sys(\psi + \psi', \sys X) \iso \Sys(\psi, \sys X) \times \Sys(\psi', \sys X)$, and if the factors of latter are iso so is their product.
+		Similarly, locality is unchange by composition.
+
+		Then, observe that in order to solve a lifting problem as in \cref{diag:lifting-problem-1} unpacks as a pair of lifting problems, corresponding to state and interface level:
+		\begin{equation}
+			% https://q.uiver.app/#q=WzAsMyxbMCwwLCIxIl0sWzEsMCwiWCJdLFswLDEsIjIiXSxbMCwyLCIwIiwyXSxbMCwxLCJ4XzAiXSxbMiwxLCIoeF8wLCB4XzEpIiwyLHsic3R5bGUiOnsiYm9keSI6eyJuYW1lIjoiZGFzaGVkIn19fV1d
+			\begin{tikzcd}[ampersand replacement=\&]
+				1 \& X \\
+				2
+				\arrow["{x_0}", from=1-1, to=1-2]
+				\arrow["0"', from=1-1, to=2-1]
+				\arrow["{(x_0, x_1)}"', dashed, from=2-1, to=1-2]
+			\end{tikzcd}
+			\qquad
+			% https://q.uiver.app/#q=WzAsMyxbMCwwLCJcXGxlbnN7MX17MX0iXSxbMSwwLCJcXGxlbnN7SX17T30iXSxbMCwxLCJcXGxlbnN7MX17Mn0iXSxbMCwyLCJcXGxlbnN7IX17MH0iLDIseyJvZmZzZXQiOjF9XSxbMCwxLCIiLDAseyJvZmZzZXQiOjF9XSxbMiwxLCJcXGxlbnN7aX17KFxcZXhwb3NlKHhfMCksIFxcZXhwb3NlKHhfMSkpfSIsMix7Im9mZnNldCI6MSwic3R5bGUiOnsiYm9keSI6eyJuYW1lIjoiZGFzaGVkIn19fV0sWzAsMiwiIiwxLHsib2Zmc2V0IjotMX1dLFswLDEsIlxcbGVuc3tpfXtcXGV4cG9zZSh4XzApfSIsMCx7Im9mZnNldCI6LTF9XSxbMiwxLCIiLDEseyJvZmZzZXQiOi0xLCJzdHlsZSI6eyJib2R5Ijp7Im5hbWUiOiJkYXNoZWQifX19XV0=
+			\begin{tikzcd}[ampersand replacement=\&]
+				{\lens{1}{1}} \& {\lens{I}{O}} \\
+				{\lens{1}{2}}
+				\arrow[shift right, from=1-1, to=1-2]
+				\arrow["{\lens{i}{\expose(x_0)}}", shift left, from=1-1, to=1-2]
+				\arrow["{\lens{!}{0}}"', shift right, from=1-1, to=2-1]
+				\arrow[shift left, from=1-1, to=2-1]
+				\arrow["{\lens{(i, i')}{(\expose(x_0), \expose(x_1))}}"', shift right, dashed, from=2-1, to=1-2]
+				\arrow[shift left, dashed, from=2-1, to=1-2]
+			\end{tikzcd}
+		\end{equation}
+		\matteo{$i'$ fucks everything up.}
+		In particular, we see the data of the lifting problem already specifies for us the solution at the level of interfaces.
+		At the level of states, the data of a solution amounts to just $x_1 \in X$ satisfying $x_1 \in \update(x_0, i)$.
+		Thus we deduce:
+		\begin{enumerate}
+			\item a complete non-deterministic Moore machine, in this sense, is one such that for each $i \in I$ and state $x_0 \in X$, admits a transition $x_0 \overset{i}\leadsto x_1$.
+			\item a deterministic non-deterministic Moore machine, in this sense, is one such that for each $i \in I$ and state $x_0 \in X$ which admits transitions $x_0 \overset{i}\leadsto x_1$, $x_0 \overset{i}\leadsto x_1'$, we have $x_1 = x_1'$.
+		\end{enumerate}
+		Put more succinctly, it is complete when at least one transition is possible and deterministic when at most one transition is, \emph{per input}.
+		It is completely deterministic when it is deterministic in the usual sense of the word in this context, that is when every state has exactly one possible transition per input.
+	\end{example}
+
+	\begin{example}
+		Using instead the notion of timepiece from \cref{ex:non-det-moore-with-finite-trajs}, where timepieces are now not strictly increasing, locality is strenghtened by the presence of the other map $\epsilon_1 : 1 \to 2$ hitting the second point.
+		Lifts against that map witness `backwards' completeness and determinism, thus the property of having, respectively, at least and at most one `past' state leading to the current one \emph{per input}.
+		So a completely deterministic system with respect to non-strictly increasing timepieces are \textbf{reversible Moore machines}, i.e. those whose map $I \to \Set(X,X)$ hits automorphisms only (thus giving an action of the free \emph{group} on the alphabet $I$).
+	\end{example}
+
+	\begin{example}
+		Finally, using the notion of timepiece from \cref{ex:non-det-moore-with-infinite-traj}, maps there are just shifts $\_ + k : \sys \omega \to \sys \omega$, which are of course generated by $\_+1$.
+		Completeness with respect to this map.
+	\end{example}
+
+	\begin{definition}
+		Consider a map of systems $\varphi : \sys X \to \sys Y$ and the following lifting problems:
+		\begin{equation}
+			% https://q.uiver.app/#q=WzAsNCxbMSwwLCJcXHN5cyBYIl0sWzEsMSwiXFxzeXMgWSJdLFswLDAsInMiXSxbMCwxLCJ0Il0sWzAsMSwiXFx2YXJwaGkiXSxbMiwzLCJcXHBzaSIsMl0sWzMsMV0sWzIsMF0sWzMsMCwiIiwxLHsic3R5bGUiOnsiYm9keSI6eyJuYW1lIjoiZGFzaGVkIn19fV1d
+			\begin{tikzcd}[ampersand replacement=\&]
+				\sys s \& {\sys X} \\
+				\sys t \& {\sys Y}
+				\arrow[from=1-1, to=1-2]
+				\arrow["\forall \psi"', from=1-1, to=2-1]
+				\arrow["\varphi", from=1-2, to=2-2]
+				\arrow[dashed, from=2-1, to=1-2]
+				\arrow[from=2-1, to=2-2]
+			\end{tikzcd}
+		\end{equation}
+		where $\psi$ is a map of timepieces.
+		We say $\varphi$ is
+		\begin{enumerate}
+			\item \textbf{$\sys T$-complete} if at least a diagonal filling exists,
+			\item \textbf{$\sys T$-deterministic} if at most a diagonal filling exists,
+		\end{enumerate}
+		A complete and deterministic map is called \textbf{open}.
+	\end{definition}
+
+	\subsubsection{Open maps}
+
+	\subsection{Behavioural logic}
 
 	\printbibliography
 \end{document}
