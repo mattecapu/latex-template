@@ -360,8 +360,12 @@
 	\end{eqalign}
 
 	\section{Endogenous logic}
+	There is a whole approach to behaviour, bisimulation and logic for labelled transition systems using essentially geometric tools, as pioneered by Joyal, Nielsen and Winskel in \cite{joyalBisimulationOpenMaps1996} (also see \cite{chengOpenMapsWork1995}).
+
+	We follows that idea closely, but instantiate it in the setting of Double Categorical Systems Theory (DCST) to achieve greater generality and study how compositionality interacts with the notions of jointly corepresentable behaviour, opennes, locality and bisimilarity.
+
 	\subsection{Time}
-	Consider the tight datum $D:\Sys \to \Comp$ of a theory of systems, and recall there is a double category whose objects are pairs $(A \in \Comp, \sys S \in \Sys(A))$, denoted as $\lens{\sys S}{A}$, whose tight 1-cells are maps of systems and interfaces, and whose loose 1-cells $\lens{\sys S}{A} \to \lens{\sys T}{B}$ are compositions $p:A \to B$ such that $\sys S\cdot p = \sys T$.
+	Consider the tight datum $D:\Sys \to \Comp$ of a theory of systems, and recall there is a double category whose objects are pairs $(A \in \Comp, \sys S \in \Sys(A))$, denoted as $\lens{\sys S}{A}$, whose tight 1-cells are \emph{maps of systems and interfaces}, and whose loose 1-cells $\lens{\sys S}{A} \to \lens{\sys T}{B}$ are \emph{compositions} $p:A \to B$ such that $\sys S\cdot p = \sys T$.
 
 	We denote this double category as $\dblSys$.
 	We make good use of the tight part of this double category.
@@ -404,9 +408,11 @@
 
 	\begin{example}
 	\label{ex:non-det-moore-with-strictly-increasing-finite-trajs}
-		Consider the theory $\Moore_P$ of non-deterministic Moore machines in $\Set$.
-		Let $\Time = (\N, \leq)$ and define $\sys T:\Time \to \Moore_P$ as follows.
-		The non-deterministic Moore machine $\sys T_n$ has interface\footnotemark~$\lens{1}{n}$ and dynamics representable as follows:
+		Consider the theory $\Moore_P$ of non-deterministic dependent Moore machines in $\Set$.
+		These have interfaces given by polynomial functors on $\Set$.
+
+		Let $\Time = (\N^{>0}, \leq)$ and define $\sys T:\Time \to \Moore_P$ as follows.
+		The non-deterministic Moore machine $\sys T_n$ has interface\footnotemark~$\lens{[\_ < n]}{n} = \sum_{i < n} y + 1$ and dynamics representable as follows:
 		\footnotetext{We abuse notation by denoting with $n$ also the finite set $\{1, \ldots, n\} \subseteq \N$}
 		\begin{equation}
 			% https://q.uiver.app/#q=WzAsNCxbMCwwLCJcXE92ZXJzZXR7MX1cXGJ1bGxldCJdLFsxLDAsIlxcT3ZlcnNldHsyfVxcYnVsbGV0Il0sWzIsMCwiXFxjZG90cyJdLFszLDAsIlxcT3ZlcnNldHtufVxcYnVsbGV0Il0sWzAsMV0sWzEsMl0sWzIsM11d
@@ -417,13 +423,19 @@
 				\arrow[from=1-3, to=1-4]
 			\end{tikzcd}
 		\end{equation}
-		An inequality $n \leq m$ is then mapped to the map of systems $\sys T_n \to \sys T_m$ that maps the states of the first to the first $n$ states of the latter.
+		We call this the \textbf{walking transition of length $n$}, and indeed (co)represents sequences of $n$ transitions.
+		More accurately, $\lens{[\_ < n]}{n}$ corepresents sequences of $n$ observations and $n-1$ inputs:
+		\begin{equation}
+			\left\{\lens{[\_ < n]}{n} \chartto \lens{I}{O}\right\} \iso \left\{(o_1, \ldots, o_n; i_1, \ldots, i_{n-1}) \mid i_k \in I(o_k)\right\}
+		\end{equation}
+		and then a map $\sys T_n \to \sys X$ picks out a trajectory $x_0 \nleadsto{i_1} \cdots \nleadsto{i_{n-1}} x_n$ as well as the corresponding outputs $o_1, \ldots, o_n$.
+		An inequality $n \leq m$ is then assigned to the map of systems $\sys T_n \to \sys T_m$ denoting the inclusion of the first $n$ states of $\sys T_m$.
 	\end{example}
 
 	\begin{example}
 	\label{ex:non-det-moore-with-finite-trajs}
-		Instead of $(\N,\leq)$ let $\Time$ be the category whose objects are still $\N$ but whose morphisms $n \to m$ ($n \leq m$) are given by choices of an offset $h \in \N$ such that $h+n \leq m$.
-		The diagram $\sys T$ is defined as before on object, but now a map $h:n \to m$ is sent to the function sending $i \in n$ to $i+h \in m$.
+		Instead of $(\N^{>0},\leq)$ let $\Time$ be the category whose objects are still non-zero natural numbers but whose morphisms $n \to m$ ($n \leq m$) are given by choices of an offset $h \in \N$ such that $h+n \leq m$.
+		The diagram $\sys T$ is defined as before on objects, but now a map $h:n \to m$ is assigned to the function sending $i \in n$ to $i+h \in m$.
 	\end{example}
 
 	\begin{example}
@@ -523,7 +535,7 @@
 			\arrow["\exists"', dashed, from=2-1, to=1-2]
 		\end{tikzcd}
 	\end{equation}
-	Conversely, $\sys T$-deterministic system is such that if two such extensions exist, then they must necessary be equal:
+	Conversely, a $\sys T$-deterministic system is such that if two such extensions exist, then they must necessarily be equal:
 	\begin{equation}
 		% https://q.uiver.app/#q=WzAsMyxbMCwwLCJcXHN5cyBzIl0sWzEsMCwiXFxzeXMgWCJdLFswLDEsIlxcc3lzIHQiXSxbMCwyLCJcXGZvcmFsbCBcXHBzaSIsMl0sWzAsMV0sWzIsMSwiIiwyLHsiY3VydmUiOjF9XSxbMiwxLCIiLDEseyJjdXJ2ZSI6LTF9XSxbNiw1LCI9IiwzLHsic2hvcnRlbiI6eyJzb3VyY2UiOjIwLCJ0YXJnZXQiOjIwfSwiZWRnZV9hbGlnbm1lbnQiOnsic291cmNlIjpmYWxzZSwidGFyZ2V0IjpmYWxzZX0sInN0eWxlIjp7ImJvZHkiOnsibmFtZSI6Im5vbmUifSwiaGVhZCI6eyJuYW1lIjoibm9uZSJ9fX1dXQ==
 		\begin{tikzcd}[ampersand replacement=\&]
@@ -542,14 +554,26 @@
 
 	\begin{example}
 		Consider non-deterministic Moore machines with timepieces as in \cref{ex:non-det-moore-with-strictly-increasing-finite-trajs}.
-		Note, first, the map of timepieces ${\epsilon_0 : \{\bullet\} \longto \{0 \to 1\}}$ is enough to detect completeness and determinism already.
+		Note, first, the map of timepieces ${\epsilon_0 : 1 \to 2}$ is enough to detect completeness and determinism already.
 		This descends from two facts.
 		First, all maps as described in \cref{ex:non-det-moore-with-strictly-increasing-finite-trajs} are clearly either of the form $\epsilon_0 + k$, or compositions thereof.
 		Second, if $\sys X$ is local with respect to $\psi$ and $\psi'$, it must be local with respect to $\psi + \psi'$ since $\Sys(\psi + \psi', \sys X) \iso \Sys(\psi, \sys X) \times \Sys(\psi', \sys X)$, and if the factors of latter are iso so is their product.
-		Similarly, locality is unchange by composition.
+		Similarly, locality is stable under composition.
 
-		Then, observe that in order to solve a lifting problem as in \cref{diag:lifting-problem-1} unpacks as a pair of lifting problems, corresponding to state and interface level:
+		Then, observe that a lifting problem as in \cref{diag:lifting-problem-1} unpacks as a pair of lifting problems, corresponding to interface and state level:
 		\begin{equation}
+			% https://q.uiver.app/#q=WzAsMyxbMCwwLCJcXGxlbnN7MX17MX0iXSxbMSwwLCJcXGxlbnN7SX17T30iXSxbMCwxLCJcXGxlbnN7MX17Mn0iXSxbMCwyLCJcXGxlbnN7IX17MH0iLDIseyJvZmZzZXQiOjF9XSxbMCwxLCIiLDAseyJvZmZzZXQiOjF9XSxbMiwxLCJcXGxlbnN7aX17KFxcZXhwb3NlKHhfMCksIFxcZXhwb3NlKHhfMSkpfSIsMix7Im9mZnNldCI6MSwic3R5bGUiOnsiYm9keSI6eyJuYW1lIjoiZGFzaGVkIn19fV0sWzAsMiwiIiwxLHsib2Zmc2V0IjotMX1dLFswLDEsIlxcbGVuc3tpfXtcXGV4cG9zZSh4XzApfSIsMCx7Im9mZnNldCI6LTF9XSxbMiwxLCIiLDEseyJvZmZzZXQiOi0xLCJzdHlsZSI6eyJib2R5Ijp7Im5hbWUiOiJkYXNoZWQifX19XV0=
+			\begin{tikzcd}[ampersand replacement=\&]
+				{\lens{1}{1}} \& {\lens{I}{O}} \\
+				{\lens{[\_<2]}{2}}
+				\arrow[shift right, from=1-1, to=1-2]
+				\arrow["{\lens{i}{\expose(x_0)}}", shift left, from=1-1, to=1-2]
+				\arrow["{\lens{!}{0}}"', shift right, from=1-1, to=2-1]
+				\arrow[shift left, from=1-1, to=2-1]
+				\arrow["{\lens{i}{(\expose(x_0), \expose(x_1))}}"', shift right, dashed, from=2-1, to=1-2]
+				\arrow[shift left, dashed, from=2-1, to=1-2]
+			\end{tikzcd}
+			\hspace*{10ex}
 			% https://q.uiver.app/#q=WzAsMyxbMCwwLCIxIl0sWzEsMCwiWCJdLFswLDEsIjIiXSxbMCwyLCIwIiwyXSxbMCwxLCJ4XzAiXSxbMiwxLCIoeF8wLCB4XzEpIiwyLHsic3R5bGUiOnsiYm9keSI6eyJuYW1lIjoiZGFzaGVkIn19fV1d
 			\begin{tikzcd}[ampersand replacement=\&]
 				1 \& X \\
@@ -558,25 +582,12 @@
 				\arrow["0"', from=1-1, to=2-1]
 				\arrow["{(x_0, x_1)}"', dashed, from=2-1, to=1-2]
 			\end{tikzcd}
-			\qquad
-			% https://q.uiver.app/#q=WzAsMyxbMCwwLCJcXGxlbnN7MX17MX0iXSxbMSwwLCJcXGxlbnN7SX17T30iXSxbMCwxLCJcXGxlbnN7MX17Mn0iXSxbMCwyLCJcXGxlbnN7IX17MH0iLDIseyJvZmZzZXQiOjF9XSxbMCwxLCIiLDAseyJvZmZzZXQiOjF9XSxbMiwxLCJcXGxlbnN7aX17KFxcZXhwb3NlKHhfMCksIFxcZXhwb3NlKHhfMSkpfSIsMix7Im9mZnNldCI6MSwic3R5bGUiOnsiYm9keSI6eyJuYW1lIjoiZGFzaGVkIn19fV0sWzAsMiwiIiwxLHsib2Zmc2V0IjotMX1dLFswLDEsIlxcbGVuc3tpfXtcXGV4cG9zZSh4XzApfSIsMCx7Im9mZnNldCI6LTF9XSxbMiwxLCIiLDEseyJvZmZzZXQiOi0xLCJzdHlsZSI6eyJib2R5Ijp7Im5hbWUiOiJkYXNoZWQifX19XV0=
-			\begin{tikzcd}[ampersand replacement=\&]
-				{\lens{1}{1}} \& {\lens{I}{O}} \\
-				{\lens{1}{2}}
-				\arrow[shift right, from=1-1, to=1-2]
-				\arrow["{\lens{i}{\expose(x_0)}}", shift left, from=1-1, to=1-2]
-				\arrow["{\lens{!}{0}}"', shift right, from=1-1, to=2-1]
-				\arrow[shift left, from=1-1, to=2-1]
-				\arrow["{\lens{(i, i')}{(\expose(x_0), \expose(x_1))}}"', shift right, dashed, from=2-1, to=1-2]
-				\arrow[shift left, dashed, from=2-1, to=1-2]
-			\end{tikzcd}
 		\end{equation}
-		\matteo{$i'$ fucks everything up.}
-		In particular, we see the data of the lifting problem already specifies for us the solution at the level of interfaces.
 		At the level of states, the data of a solution amounts to just $x_1 \in X$ satisfying $x_1 \in \update(x_0, i)$.
+		At the interface level, the data $\lens{i}{\expose(x_0)}$ of the lifting problem already specifies the entire solution, with the chart $\lens{[\_<2]}{2} \chartto \lens{I}{O}$ forced to pick out the given input $i$ and the pair of outputs $(\expose(x_0), \expose(x_1))$.
 		Thus we deduce:
 		\begin{enumerate}
-			\item a complete non-deterministic Moore machine, in this sense, is one such that for each $i \in I$ and state $x_0 \in X$, admits a transition $x_0 \overset{i}\leadsto x_1$.
+			\item a complete non-deterministic Moore machine, in this sense, is one such that for each $i \in I$ and state $x_0 \in X$, admits at least one transition $x_0 \overset{i}\leadsto x_1$.
 			\item a deterministic non-deterministic Moore machine, in this sense, is one such that for each $i \in I$ and state $x_0 \in X$ which admits transitions $x_0 \overset{i}\leadsto x_1$, $x_0 \overset{i}\leadsto x_1'$, we have $x_1 = x_1'$.
 		\end{enumerate}
 		Put more succinctly, it is complete when at least one transition is possible and deterministic when at most one transition is, \emph{per input}.
@@ -591,7 +602,7 @@
 
 	\begin{example}
 		Finally, using the notion of timepiece from \cref{ex:non-det-moore-with-infinite-traj}, maps there are just shifts $\_ + k : \sys \omega \to \sys \omega$, which are of course generated by $\_+1$.
-		Completeness with respect to this map.
+		Completeness with respect to this map...
 	\end{example}
 
 	\begin{definition}
